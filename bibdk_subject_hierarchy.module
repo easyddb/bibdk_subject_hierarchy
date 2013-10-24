@@ -1,0 +1,88 @@
+<?php
+/**
+ * @file
+ * Bibliotek.dk subject hierarchy module main file.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function bibdk_subject_hierarchy_menu() {
+  $emnehierarki =  variable_get('subject_hierarchy', 'Fail!');
+  // dpm($emnehierarki);
+}
+
+
+/**
+ * Implements hook_help().
+ */
+function bibdk_subject_hierarchy_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#bibdk_subject_hierarchy';
+      $file = drupal_get_path('module', 'bibdk_subject_hierarchy') . "/help/bibdk_subject_hierarchy.help";
+      return $output = file_get_contents($file);
+    break;
+  }
+}
+
+
+/**
+ * Implements hook_block_info().
+ */
+function bibdk_subject_hierarchy_block_info() {
+  $blocks['bibdk-subject-hierarchy'] = array(
+      'title' => '<none>',
+      'info'  => t('Bibliotek.dk subject hierarchy'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    );
+  return $blocks;
+}
+
+
+/**
+ * Implements hook_block_view().
+ */
+function bibdk_subject_hierarchy_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'bibdk-subject-hierarchy':
+      $block['title'] = '<none>';
+      $block['subject'] = t('Bibliotek.dk subject hierarchy', array());
+      $block['content'] = theme(
+                            'bibdk_subject_hierarchy',
+                            array(
+                              'hierarchy' => variable_get('subject_hierarchy', array()),
+                              'path' => _bibdk_subject_hierarchy_search_info()
+                            )
+                          );
+      break;
+  }
+  return $block;
+}
+
+
+/**
+ * Implements hook_theme().
+ */
+function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
+  $path = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/theme';
+  return array(
+    'bibdk_subject_hierarchy' => array(
+      'variables' => array('hierarchy' => NULL),
+      'path' => $path,
+      'template'    => 'bibdk-subject-hierarchy',
+    ),
+  );
+}
+
+
+function _bibdk_subject_hierarchy_search_info() {
+
+  $path = '';
+  $search_info = search_get_default_module_info();
+  if ( !empty($search_info['path']) && in_array($search_info['module'], variable_get('search_active_modules', array())) ) {
+    $path = $search_info['path'];
+  }
+  return $path;
+
+}

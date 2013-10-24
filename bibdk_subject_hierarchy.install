@@ -1,0 +1,163 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the subject hierarchy module.
+ */
+
+
+/**
+ * Implements hook_enable().
+ */
+function bibdk_subject_hierarchy_enable() {
+  $filename = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/data/emnehierarki_full.xml';
+  $file = file_get_contents($filename);
+  if ( $file ) {
+    _bibdk_subject_hierarchy_parse_xml($file);
+  } else {
+    watchdog('subject_hierarchy','No XML file found.' , array(), WATCHDOG_ERROR);
+  }
+}
+
+
+/**
+ * Implements hook_install().
+ */
+function bibdk_subject_hierarchy_install() {
+  _bibdk_subject_hierarchy_block();
+}
+
+
+/**
+ * Implements hook_uninstall().
+ */
+function bibdk_subject_hierarchy_uninstall() {
+  variable_set('subject_hierarchy', NULL);
+}
+
+function _bibdk_subject_hierarchy_block() {
+  $values = array(
+    array(
+      'module' => 'bibdk_subject_hierarchy',
+      'delta' => 'bibdk_subject_hierarchy',
+      'theme' => 'bibdk_theme',
+      'status' => 1,
+      'weight' => 0,
+      'region' => 'subject_hierarchy',
+      'pages' => '',
+      'cache' => -1,
+      'title' => '<none>',
+    ),
+  );
+  $query = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache', 'title'));
+  foreach ($values as $record) {
+    $query->values($record);
+  }
+  $query->execute();
+}
+
+
+/**
+ * Parse hierarchy xml into an array
+ */
+function _bibdk_subject_hierarchy_parse_xml($file) {
+    require_once('lib/xml_func.php');
+    if ( $file = utf8_encode($file) ) {
+      $emnehierarki = xml2array($file);
+      $emnehierarki = _bibdk_subject_hierarchy_parse($emnehierarki['term']);
+      variable_set('subject_hierarchy', $emnehierarki);
+    }
+}
+
+
+/**
+ * Parse hierarchy xml into an array
+ */
+function _bibdk_subject_hierarchy_parse($terms) {
+  while ( list($n,$term) = each($terms) ) {
+    $record[$n] = _bibdk_subject_hierarchy_parse_term($term);
+  }
+  return $record;
+}
+
+
+/**
+ * Parse hierarchy term
+ */
+function _bibdk_subject_hierarchy_parse_term($term) {
+  $record = array();
+
+  $replaceFrom = array(
+    ' og ',
+    ' eller ',
+    ' ikke',
+    'lds=',
+    'lem=',
+    'lti=',
+    'db=',
+    'df=',
+    'dk=',
+    'ds=',
+    'em=',
+    'fl=',
+    'ti=',
+    'ke=',
+    'kk=',
+    'ma=',
+    'no=',
+    'ok=',
+    'sp=',
+    'ti=',
+    '?'
+  );
+
+  $replaceTo = array(
+    ' OG ',
+    ' ELLER ',
+    ' IKKE',
+    'dkcclphrase.lds=',
+    'dkcclphrase.lem=',
+    'dkcclphrase.lti=',
+    'dkcclterm.db=',
+    'dkcclterm.df=',
+    'dkcclterm.dk=',
+    'dkcclterm.ds=',
+    'dkcclterm.em=',
+    'dkcclterm.fl=',
+    'dkcclterm.ti=',
+    'dkcclterm.ke=',
+    'dkcclterm.kk=',
+    'dkcclterm.ma=',
+    'dkcclterm.no=',
+    'dkcclterm.ok=',
+    'dkcclterm.sp=',
+    'dkcclterm.ti=',
+    '*'
+  );
+
+  while ( list($key, $item) = each($term) ) {
+    if ( (string)$key != (string)(int)$key ) {
+      if ( $key == 'term' ) {
+        $record[$key] = _bibdk_subject_hierarchy_parse($item);
+      } elseif ( $key == 'ccl' ) {
+        $record['cql'] = str_replace($replaceFrom, $replaceTo, $item);
+        $record[$key] = $item;
+      } else {
+        $record[$key] = $item;
+      }
+    }
+  }
+  return $record;
+}
+
+
+
+/**
+ * Implements hook_update_N
+ * set region and blocks
+ */
+/*
+function bibdk_subject_hierarchy_update_7001(&$sandbox) {
+}
+*/
+
