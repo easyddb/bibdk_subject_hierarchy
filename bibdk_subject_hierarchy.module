@@ -8,7 +8,7 @@
  * Implements hook_menu().
  */
 function bibdk_subject_hierarchy_menu() {
-  $emnehierarki =  variable_get('subject_hierarchy', 'Fail!');
+  // $emnehierarki =  variable_get('subject_hierarchy', 'Fail!');
   // dpm($emnehierarki);
 }
 

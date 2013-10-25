@@ -24,7 +24,7 @@ function bibdk_subject_hierarchy_enable() {
  * Implements hook_install().
  */
 function bibdk_subject_hierarchy_install() {
-  _bibdk_subject_hierarchy_block();
+  _add_bibdk_subject_hierarchy_block();
 }
 
 
@@ -35,15 +35,19 @@ function bibdk_subject_hierarchy_uninstall() {
   variable_set('subject_hierarchy', NULL);
 }
 
-function _bibdk_subject_hierarchy_block() {
+
+/**
+ * Insert subject hierarchy block in region.
+ */
+function _add_bibdk_subject_hierarchy_block() {
   $values = array(
     array(
       'module' => 'bibdk_subject_hierarchy',
-      'delta' => 'bibdk_subject_hierarchy',
+      'delta' => 'bibdk-subject-hierarchy',
       'theme' => 'bibdk_theme',
       'status' => 1,
       'weight' => 0,
-      'region' => 'subject_hierarchy',
+      'region' => 'subjects',
       'pages' => '',
       'cache' => -1,
       'title' => '<none>',
@@ -159,10 +163,10 @@ function _bibdk_subject_hierarchy_parse_term($term) {
  * Implements hook_update_N
  * set region and blocks
  */
-/*
 function bibdk_subject_hierarchy_update_7001(&$sandbox) {
+  _add_bibdk_subject_hierarchy_block();
 }
-*/
+
 
 
 /** Normalize a string so that it can be compared with others without being too fussy.
