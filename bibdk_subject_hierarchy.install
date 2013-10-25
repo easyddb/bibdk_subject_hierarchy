@@ -142,6 +142,9 @@ function _bibdk_subject_hierarchy_parse_term($term) {
       } elseif ( $key == 'ccl' ) {
         $record['cql'] = str_replace($replaceFrom, $replaceTo, $item);
         $record[$key] = $item;
+      } elseif ( $key == 'ord' ) {
+        $record['note'] = 'LABEL_' . normalize_string($item);
+        $record[$key] = $item;
       } else {
         $record[$key] = $item;
       }
@@ -161,3 +164,19 @@ function bibdk_subject_hierarchy_update_7001(&$sandbox) {
 }
 */
 
+
+/** Normalize a string so that it can be compared with others without being too fussy.
+*   e.g. "Ádrèñålînë" would return "adrenaline"
+*   Note: Some letters are converted into more than one letter,
+*   e.g. "ß" becomes "sz", or "æ" becomes "ae"
+*/
+function normalize_string($string) {
+    // remove whitespace, leaving only a single underscore between words.
+    $string = preg_replace('/\s+/', '_', $string);
+    // flick diacritics off of their letters
+    $string = preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml|caron);~i', '$1', htmlentities($string, ENT_COMPAT, 'UTF-8'));
+    $string = strtoupper($string);
+    // replace all non-latin1 characters with NULL
+    $string = preg_replace('/[^A-Z_]/', NULL, $string);
+    return $string;
+}
