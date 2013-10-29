@@ -5,27 +5,41 @@
  * Theme implementation for bibdk_subject_hierarchy.
  */
 
-// dpm($variables['hierarchy'][4]);
-
 ?>
 
-<div id="bibdk-subject-hierarchy" class="clearfix">
+<div id="bibdk-subject-hierarchy" class="themes clearfix">
 
-  <h3><?php echo t('LABEL_SUBJECT_HIERARCHY_HEADER', array(), array('context' => 'bibdk_subject_hierarchy')); ?></h3>
+  <div class="container clearfix">
+
+    <div class="themes_row clearfix">
 
 <?php foreach ($variables['hierarchy'] as $key => $item) {
-  $attributes['id']       = array('bibdk-subject-hierarchy-item-0-' . $key);
-  $attributes['class']    = array('bibdk-subject-hierarchy-item');
-  $attributes['data-rel'] = 'subject-hierarchy';
-  $url = 'search/' . $variables['path'] . '/' . trim($item['cql']);
-  $query = NULL;
+  $attributes_label['id'] = array('subject-hierarchy-label-link-0-' . $key);
+  $attributes_label['class'] = array('use-ajax');
+  $attributes_note['id']  = array('subject-hierarchy-note-link-0-' . $key);
+  $attributes_note['class'] = array('use-ajax');
+  $url = 'bibdk_subject_hierarchy/nojs/' . $key;
+  // $url = 'search/' . $variables['path'] . '/' . trim($item['cql']);
+
+  if ( in_array($key, array(4,8)) ) {
+    $row = $key/4;
+    echo '      <div class="themes__sublists__wrapper row-' . $row . '"><div class="themes__sublists">fubar</div></div>' . "\n";
+    echo '    </div><div class="themes_row  clearfix">' . "\n";
+  }
 ?>
+      <div class="themes__item item-<?php echo $key; ?>">
+        <p>
+          <span class="header"><?php echo l($item['ord'], $url, array('attributes' => $attributes_label)); ?></span>
+          <span class="note"><?php echo l(t($item['note'], array(), array('context' => 'bibdk_subject_hierarchy')), $url, array('attributes' => $attributes_note)) . "\n"; ?></span>
+        </p>
+      </div>
+<?php
+}
+?>
+      <div class="themes__sublists__wrapper row-3"><div class="themes__sublists">fubar</div></div>
 
-  <div class="span6 subject-hierarchy-item hierarchy-level0">
-    <p class="header"><?php echo l($item['ord'], $url . $query, array('attributes' => $attributes)); ?><p>
-    <p class="note"><?php echo t($item['note'], array(), array('context' => 'bibdk_subject_hierarchy')); ?></p>
+    </div>
+    <!-- .themes__row -->
   </div>
-
-<?php } ?>
-
 </div>
+

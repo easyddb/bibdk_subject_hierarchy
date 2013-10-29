@@ -8,8 +8,23 @@
  * Implements hook_menu().
  */
 function bibdk_subject_hierarchy_menu() {
-  // $emnehierarki =  variable_get('subject_hierarchy', 'Fail!');
-  // dpm($emnehierarki);
+  // Returns AJAX commands if the user has JavaScript turned on.
+  $items['bibdk_subject_hierarchy/ajax/%'] = array(
+    'title' => 'bibdk_subject_hierarchy callback',
+    'page callback' => 'bibdk_subject_hierarchy_ajax_callback',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  // Returns a Non-JavaScript alternative.
+  $items['bibdk_subject_hierarchy/nojs/%'] = array(
+    'title' => 'bibdk_subject_hierarchy non-javascript callback',
+    'page callback' => 'bibdk_subject_hierarchy_nojs_callback',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
 }
 
 
@@ -46,12 +61,15 @@ function bibdk_subject_hierarchy_block_view($delta = '') {
   $block = array();
   switch ($delta) {
     case 'bibdk-subject-hierarchy':
+      // Load in Drupal core AJAX library.
+      drupal_add_library('system', 'drupal.ajax');
+      drupal_add_js(drupal_get_path('module', 'bibdk_subject_hierarchy') . '/js/bibdk_subject_hierarchy.js');
       $block['title'] = '<none>';
       $block['subject'] = t('Bibliotek.dk subject hierarchy', array());
       $block['content'] = theme(
                             'bibdk_subject_hierarchy',
                             array(
-                              'hierarchy' => variable_get('subject_hierarchy', array()),
+                              'hierarchy' => _get_bibdk_subject_hierarchy(),
                               'path' => _bibdk_subject_hierarchy_search_info()
                             )
                           );
@@ -72,17 +90,98 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
       'path' => $path,
       'template'    => 'bibdk-subject-hierarchy',
     ),
+    'bibdk_subject_hierarchy_item' => array(
+      'variables' => array('hierarchy' => NULL),
+      'path' => $path,
+      'template'    => 'bibdk-subject-hierarchy-item',
+    ),
   );
 }
 
 
-function _bibdk_subject_hierarchy_search_info() {
+/**
+ * AJAX callback
+ */
+function bibdk_subject_hierarchy_ajax_callback($key) {
 
+  $key = explode(',',$key);
+
+  // Define a new array to hold our AJAX commands.
+  $ajax_commands = array();
+  $row = ceil(($key[0]+1)/4);
+
+  $emnehierarki = _get_bibdk_subject_hierarchy();
+
+  $path = _bibdk_subject_hierarchy_search_info();
+
+  $breadcrumb   = array(
+    'ord' => $emnehierarki[$key[0]]['ord'],
+    'url' => 'search/' . $path . '/' . $emnehierarki[$key[0]]['cql'],
+    'key' => $key[0],
+  );
+  $breadcrumbs[] = $breadcrumb;
+
+  $emnehierarki_item = theme(
+    'bibdk_subject_hierarchy_item',
+    array(
+      'breadcrumbs' => $breadcrumbs,
+      'hierarchy' => $emnehierarki[$key[0]],
+      'current_key' => implode(',',$key),
+      'path' => $path
+    )
+  );
+
+  // Create a new AJAX command that replaces the .themes__sublists__wrapper text.
+  $ajax_commands[] = ajax_command_replace(
+    '.themes__sublists__wrapper.row-' . $row, 
+    '<div class="themes__sublists__wrapper row-' . $row . '">' . $emnehierarki_item . '</div>'
+  );
+  $ajax_commands[] = ajax_command_invoke(
+    '.themes__sublists__wrapper', 
+    'fadeOut',
+    array('200')
+  );
+  $ajax_commands[] = ajax_command_invoke(
+    '.themes__sublists__wrapper.row-' . $row, 
+    'fadeIn',
+    array('200')
+  );
+  $ajax_commands[] = ajax_command_invoke(
+    '.themes__item', 
+    'removeClass',
+    array('themes__item--active')
+  );
+  $ajax_commands[] = ajax_command_invoke(
+    '.themes__item.item-' . $key[0], 
+    'addClass',
+    array('themes__item--active')
+  );
+
+  // Return our commands in JSON.
+  return drupal_json_output($ajax_commands);
+}
+
+
+/**
+ * Non-JavaScript callback that returns hello world.
+ */
+function bibdk_subject_hierarchy_nojs_callback() {
+  return "Hello world";
+}
+
+
+function _get_bibdk_subject_hierarchy() {
+  $emnehierarki = variable_get('subject_hierarchy', array());
+  // todo: if empty, convert from xml
+  return $emnehierarki;
+}
+
+
+function _bibdk_subject_hierarchy_search_info() {
   $path = '';
   $search_info = search_get_default_module_info();
   if ( !empty($search_info['path']) && in_array($search_info['module'], variable_get('search_active_modules', array())) ) {
     $path = $search_info['path'];
   }
   return $path;
-
 }
