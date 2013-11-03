@@ -6,7 +6,7 @@ package = Bibliotek.dk
 
 files[] = lib/xml_func.php
 files[] = lib/ccl2cql.php
-
-// files[] = text/bibdk_subject_hierarchy.test
+files[] = test/bibdk_subject_hierarchy_web_test.test
+files[] = test/bibdk_subject_hierarchy_unit_test.test
 
 configure = admin/config/search/bibdk_subject_hierarchy

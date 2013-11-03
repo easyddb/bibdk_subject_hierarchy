@@ -9,14 +9,14 @@
           <div class="themes__close-button icon icon-blue-x">&nbsp;</div>
           <div class="themes__breadcrumb">
 <?php foreach ( $variables['breadcrumbs'] as $breadcrumb ) {
-    echo l($breadcrumb['ord'], $breadcrumb['url'], array());
+    echo l($breadcrumb['ord'], $breadcrumb['url'], $breadcrumb['attributes']);
 } ?>
           </div>
           <div class="themes__sublist">
             <ul>
 <?php foreach ( $variables['hierarchy']['term'] as $key => $item ) {
     if ( !empty($item['cql']) ) {
-      $url = 'search/' . $variables['path'] . '/' . trim($item['cql']);
+      $url = 'search/' . $variables['search_path'] . '/' . trim($item['cql']);
       $attributes['attributes'] = array();
     } else {
       $url = 'bibdk_subject_hierarchy/nojs/' . $variables['current_key'] . ',' . $key;

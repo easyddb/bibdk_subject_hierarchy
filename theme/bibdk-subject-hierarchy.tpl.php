@@ -11,6 +11,10 @@
 
   <div class="container clearfix">
 
+    <div class="bibdk-subject-hierarchy-header">
+        <?php echo t($variables['header'], array(), array('context' => 'bibdk_subject_hierarchy')); ?>
+    </div>
+
     <div class="themes_row clearfix">
 
 <?php foreach ($variables['hierarchy'] as $key => $item) {
@@ -19,7 +23,6 @@
   $attributes_note['id']  = array('subject-hierarchy-note-link-0-' . $key);
   $attributes_note['class'] = array('use-ajax');
   $url = 'bibdk_subject_hierarchy/nojs/' . $key;
-  // $url = 'search/' . $variables['path'] . '/' . trim($item['cql']);
 
   if ( in_array($key, array(4,8)) ) {
     $row = $key/4;

@@ -22,7 +22,6 @@ function bibdk_subject_hierarchy_menu() {
     'page callback' => 'bibdk_subject_hierarchy_nojs_callback',
     'page arguments' => array(2),
     'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
   );
   return $items;
 }
@@ -70,7 +69,8 @@ function bibdk_subject_hierarchy_block_view($delta = '') {
                             'bibdk_subject_hierarchy',
                             array(
                               'hierarchy' => _get_bibdk_subject_hierarchy(),
-                              'path' => _bibdk_subject_hierarchy_search_info()
+                              'path' => _bibdk_subject_hierarchy_search_info(),
+                              'header' => 'HEADER_BIBDK_SUBJECT_HIERARCHY',
                             )
                           );
       break;
@@ -86,12 +86,12 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
   $path = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/theme';
   return array(
     'bibdk_subject_hierarchy' => array(
-      'variables' => array('hierarchy' => NULL),
+      'variables' => array('hierarchy' => NULL, 'header' => NULL, ),
       'path' => $path,
       'template'    => 'bibdk-subject-hierarchy',
     ),
     'bibdk_subject_hierarchy_item' => array(
-      'variables' => array('hierarchy' => NULL),
+      'variables' => array('hierarchy' => NULL, 'breadcrumbs' => NULL, 'current_key' => NULL, 'search_path' => NULL),
       'path' => $path,
       'template'    => 'bibdk-subject-hierarchy-item',
     ),
@@ -104,55 +104,32 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
  */
 function bibdk_subject_hierarchy_ajax_callback($key) {
 
-  $key = explode(',',$key);
-
-  // Define a new array to hold our AJAX commands.
-  $ajax_commands = array();
-  $row = ceil(($key[0]+1)/4);
-
-  $emnehierarki = _get_bibdk_subject_hierarchy();
-
-  $path = _bibdk_subject_hierarchy_search_info();
-
-  $breadcrumb   = array(
-    'ord' => $emnehierarki[$key[0]]['ord'],
-    'url' => 'search/' . $path . '/' . $emnehierarki[$key[0]]['cql'],
-    'key' => $key[0],
-  );
-  $breadcrumbs[] = $breadcrumb;
-
-  $emnehierarki_item = theme(
-    'bibdk_subject_hierarchy_item',
-    array(
-      'breadcrumbs' => $breadcrumbs,
-      'hierarchy' => $emnehierarki[$key[0]],
-      'current_key' => implode(',',$key),
-      'path' => $path
-    )
-  );
+  $emnehierarki_item = _get_bibdk_subject_hierarchy_item($key);
+  $row = $emnehierarki_item['row'];
+  $level = $emnehierarki_item['level'];
 
   // Create a new AJAX command that replaces the .themes__sublists__wrapper text.
   $ajax_commands[] = ajax_command_replace(
-    '.themes__sublists__wrapper.row-' . $row, 
-    '<div class="themes__sublists__wrapper row-' . $row . '">' . $emnehierarki_item . '</div>'
+    '.themes__sublists__wrapper.row-' . $row,
+    '<div class="themes__sublists__wrapper row-' . $row . '">' . drupal_render($emnehierarki_item) . '</div>'
   );
   $ajax_commands[] = ajax_command_invoke(
-    '.themes__sublists__wrapper', 
+    '.themes__sublists__wrapper',
     'fadeOut',
     array('200')
   );
   $ajax_commands[] = ajax_command_invoke(
-    '.themes__sublists__wrapper.row-' . $row, 
+    '.themes__sublists__wrapper.row-' . $row,
     'fadeIn',
     array('200')
   );
   $ajax_commands[] = ajax_command_invoke(
-    '.themes__item', 
+    '.themes__item',
     'removeClass',
     array('themes__item--active')
   );
   $ajax_commands[] = ajax_command_invoke(
-    '.themes__item.item-' . $key[0], 
+    '.themes__item.item-' . $level,
     'addClass',
     array('themes__item--active')
   );
@@ -163,16 +140,58 @@ function bibdk_subject_hierarchy_ajax_callback($key) {
 
 
 /**
- * Non-JavaScript callback that returns hello world.
+ * Non-JavaScript callback.
  */
-function bibdk_subject_hierarchy_nojs_callback() {
-  return "Hello world";
+function bibdk_subject_hierarchy_nojs_callback($key) {
+
+  return _get_bibdk_subject_hierarchy_item($key);
+
+}
+
+
+function _get_bibdk_subject_hierarchy_item($key) {
+
+  $key_arr = explode(',',$key);
+
+  $search_path = _bibdk_subject_hierarchy_search_info();
+
+  $emnehierarki = _get_bibdk_subject_hierarchy();
+
+  if ( sizeof($key_arr) > 0 ) {
+    $breadcrumbs  = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key_arr);
+  }
+
+  $level = array_shift($key_arr);
+
+  // Define a new array to hold our AJAX commands.
+  $ajax_commands = array();
+  $row = ceil(($level+1)/4);
+
+  $emnehierarki = $emnehierarki[$level];
+
+  if ( sizeof($key_arr) > 0 ) {
+    $emnehierarki = _get_bibdk_subject_hierarchy_level($emnehierarki, $key_arr);
+  }
+
+  return array(
+    '#theme' => 'bibdk_subject_hierarchy_item',
+    '#breadcrumbs' => $breadcrumbs,
+    '#hierarchy' => $emnehierarki,
+    '#current_key' => $key,
+    '#search_path' => $search_path,
+    'row' => $row,
+    'level' => $level
+  );
+
 }
 
 
 function _get_bibdk_subject_hierarchy() {
-  $emnehierarki = variable_get('subject_hierarchy', array());
-  // todo: if empty, convert from xml
+  $emnehierarki = variable_get('subject_hierarchy', NULL);
+  if ( !$emnehierarki ) {
+    _bibdk_subject_hierarchy_read_data();
+    $emnehierarki = variable_get('subject_hierarchy', NULL);
+  }
   return $emnehierarki;
 }
 
@@ -184,4 +203,173 @@ function _bibdk_subject_hierarchy_search_info() {
     $path = $search_info['path'];
   }
   return $path;
+}
+
+
+function _get_bibdk_subject_hierarchy_level($emnehierarki, $key) {
+  $level = array_shift($key);
+  if ( isset($emnehierarki['term']) && isset($emnehierarki['term'][$level]) ) {
+    $emnehierarki = $emnehierarki['term'][$level];
+  }
+  if ( sizeof($key) > 0 ) {
+    $emnehierarki = _get_bibdk_subject_hierarchy_level($emnehierarki, $key);
+  }
+  return $emnehierarki;
+}
+
+
+function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key, $breadcrumbs = array()) {
+
+  $level = array_shift($key);
+
+  $path = _bibdk_subject_hierarchy_search_info();
+
+  foreach ($breadcrumbs as $n => $breadcrumb) {
+    $breadcrumbs[$n]['url'] = 'bibdk_subject_hierarchy/nojs/' . $breadcrumbs[$n]['keys_path'];
+    $breadcrumbs[$n]['attributes'] = array('attributes' => array('class' => array('use-ajax')));
+    $keys_path[] = $breadcrumb['key'];
+  }
+  $keys_path[] = $level;
+
+  $breadcrumbs[]   = array(
+    'ord' => $emnehierarki[$level]['ord'],
+    'url' => ( !empty($emnehierarki[$level]['cql']) ) ? 'search/' . $path . '/' . $emnehierarki[$level]['cql'] : 'bibdk_subject_hierarchy/nojs/' . implode(',', $keys_path),
+    'key' => $level,
+    'keys_path' => implode(',', $keys_path),
+    'attributes' => ( !empty($emnehierarki[$level]['cql']) ) ? array('attributes' => array('class' => array('last'))) : array('attributes' => array('class' => array('use-ajax'))),
+  );
+
+  if ( sizeof($key) > 0 && isset($emnehierarki[$level]['term']) && isset($emnehierarki[$level]['term']) ) {
+    $breadcrumbs = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki[$level]['term'], $key, $breadcrumbs);
+  }
+
+  return $breadcrumbs;
+
+}
+
+
+/**
+ * Parse hierarchy xml into an array
+ */
+function _bibdk_subject_hierarchy_read_data() {
+  $filename = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/data/emnehierarki_full.xml';
+  $file = file_get_contents($filename);
+  if ( $file ) {
+    _bibdk_subject_hierarchy_parse_xml($file);
+  } else {
+    watchdog('subject_hierarchy','No XML file found.' , array(), WATCHDOG_ERROR);
+  }
+}
+
+
+/**
+ * Parse hierarchy xml into an array
+ */
+function _bibdk_subject_hierarchy_parse_xml($file) {
+    require_once('lib/xml_func.php');
+    if ( $file = utf8_encode($file) ) {
+      $emnehierarki = xml2array($file);
+      $emnehierarki = _bibdk_subject_hierarchy_parse($emnehierarki['term']);
+      variable_set('subject_hierarchy', $emnehierarki);
+    }
+}
+
+
+/**
+ * Parse hierarchy xml into an array
+ */
+function _bibdk_subject_hierarchy_parse($terms) {
+  while ( list($n,$term) = each($terms) ) {
+    $record[$n] = _bibdk_subject_hierarchy_parse_term($term);
+  }
+  return $record;
+}
+
+
+/**
+ * Parse hierarchy term
+ */
+function _bibdk_subject_hierarchy_parse_term($term) {
+  $record = array();
+
+  $replaceFrom = array(
+    ' og ',
+    ' eller ',
+    ' ikke',
+    'lds=',
+    'lem=',
+    'lti=',
+    'db=',
+    'df=',
+    'dk=',
+    'ds=',
+    'em=',
+    'fl=',
+    'ti=',
+    'ke=',
+    'kk=',
+    'ma=',
+    'no=',
+    'ok=',
+    'sp=',
+    'ti=',
+    '?'
+  );
+
+  $replaceTo = array(
+    ' OG ',
+    ' ELLER ',
+    ' IKKE',
+    'dkcclphrase.lds=',
+    'dkcclphrase.lem=',
+    'dkcclphrase.lti=',
+    'dkcclterm.db=',
+    'dkcclterm.df=',
+    'dkcclterm.dk=',
+    'dkcclterm.ds=',
+    'dkcclterm.em=',
+    'dkcclterm.fl=',
+    'dkcclterm.ti=',
+    'dkcclterm.ke=',
+    'dkcclterm.kk=',
+    'dkcclterm.ma=',
+    'dkcclterm.no=',
+    'dkcclterm.ok=',
+    'dkcclterm.sp=',
+    'dkcclterm.ti=',
+    '*'
+  );
+
+  while ( list($key, $item) = each($term) ) {
+    if ( (string)$key != (string)(int)$key ) {
+      if ( $key == 'term' ) {
+        $record[$key] = _bibdk_subject_hierarchy_parse($item);
+      } elseif ( $key == 'ccl' ) {
+        $record['cql'] = str_replace($replaceFrom, $replaceTo, $item);
+        $record[$key] = $item;
+      } elseif ( $key == 'ord' ) {
+        $record['note'] = 'LABEL_' . normalize_string($item);
+        $record[$key] = $item;
+      } else {
+        $record[$key] = $item;
+      }
+    }
+  }
+  return $record;
+}
+
+/** Normalize a string so that it can be compared with others without being too fussy.
+*   e.g. "Ádrèñålînë" would return "adrenaline"
+*   Note: Some letters are converted into more than one letter,
+*   e.g. "ß" becomes "sz", or "æ" becomes "ae"
+*/
+function normalize_string($string) {
+    // remove whitespace, leaving only a single underscore between words.
+    $string = preg_replace('/\s+/', '_', $string);
+    // flick diacritics off of their letters
+    $string = preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml|caron);~i', '$1', htmlentities($string, ENT_COMPAT, 'UTF-8'));
+    $string = strtoupper($string);
+    // replace all non-latin1 characters with NULL
+    $string = preg_replace('/[^A-Z_]/', NULL, $string);
+    return $string;
 }

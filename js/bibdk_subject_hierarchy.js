@@ -10,18 +10,6 @@ if ( typeof Object.create !== 'function' ) {
 
 (function( $, window, document, undefined ) {
 
-  Drupal.behaviors.bibdk_subject_hierarchy = {
-    attach: function(context, settings) {
-      $('.themes__item').each(function( index ) {
-        new Drupal.ajax('.themes__item', $(this), {
-          url: $(this).find('a').attr('href'),
-          settings: {},
-          event: 'click tap',
-        });
-      });
-    }
-  }
-
   var Themes = {
     init: function(options, elem) {
       var self = this;

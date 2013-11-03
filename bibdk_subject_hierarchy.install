@@ -10,13 +10,7 @@
  * Implements hook_enable().
  */
 function bibdk_subject_hierarchy_enable() {
-  $filename = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/data/emnehierarki_full.xml';
-  $file = file_get_contents($filename);
-  if ( $file ) {
-    _bibdk_subject_hierarchy_parse_xml($file);
-  } else {
-    watchdog('subject_hierarchy','No XML file found.' , array(), WATCHDOG_ERROR);
-  }
+  _bibdk_subject_hierarchy_read_data();
 }
 
 
@@ -62,104 +56,6 @@ function _add_bibdk_subject_hierarchy_block() {
 
 
 /**
- * Parse hierarchy xml into an array
- */
-function _bibdk_subject_hierarchy_parse_xml($file) {
-    require_once('lib/xml_func.php');
-    if ( $file = utf8_encode($file) ) {
-      $emnehierarki = xml2array($file);
-      $emnehierarki = _bibdk_subject_hierarchy_parse($emnehierarki['term']);
-      variable_set('subject_hierarchy', $emnehierarki);
-    }
-}
-
-
-/**
- * Parse hierarchy xml into an array
- */
-function _bibdk_subject_hierarchy_parse($terms) {
-  while ( list($n,$term) = each($terms) ) {
-    $record[$n] = _bibdk_subject_hierarchy_parse_term($term);
-  }
-  return $record;
-}
-
-
-/**
- * Parse hierarchy term
- */
-function _bibdk_subject_hierarchy_parse_term($term) {
-  $record = array();
-
-  $replaceFrom = array(
-    ' og ',
-    ' eller ',
-    ' ikke',
-    'lds=',
-    'lem=',
-    'lti=',
-    'db=',
-    'df=',
-    'dk=',
-    'ds=',
-    'em=',
-    'fl=',
-    'ti=',
-    'ke=',
-    'kk=',
-    'ma=',
-    'no=',
-    'ok=',
-    'sp=',
-    'ti=',
-    '?'
-  );
-
-  $replaceTo = array(
-    ' OG ',
-    ' ELLER ',
-    ' IKKE',
-    'dkcclphrase.lds=',
-    'dkcclphrase.lem=',
-    'dkcclphrase.lti=',
-    'dkcclterm.db=',
-    'dkcclterm.df=',
-    'dkcclterm.dk=',
-    'dkcclterm.ds=',
-    'dkcclterm.em=',
-    'dkcclterm.fl=',
-    'dkcclterm.ti=',
-    'dkcclterm.ke=',
-    'dkcclterm.kk=',
-    'dkcclterm.ma=',
-    'dkcclterm.no=',
-    'dkcclterm.ok=',
-    'dkcclterm.sp=',
-    'dkcclterm.ti=',
-    '*'
-  );
-
-  while ( list($key, $item) = each($term) ) {
-    if ( (string)$key != (string)(int)$key ) {
-      if ( $key == 'term' ) {
-        $record[$key] = _bibdk_subject_hierarchy_parse($item);
-      } elseif ( $key == 'ccl' ) {
-        $record['cql'] = str_replace($replaceFrom, $replaceTo, $item);
-        $record[$key] = $item;
-      } elseif ( $key == 'ord' ) {
-        $record['note'] = 'LABEL_' . normalize_string($item);
-        $record[$key] = $item;
-      } else {
-        $record[$key] = $item;
-      }
-    }
-  }
-  return $record;
-}
-
-
-
-/**
  * Implements hook_update_N
  * set region and blocks
  */
@@ -167,20 +63,3 @@ function bibdk_subject_hierarchy_update_7001(&$sandbox) {
   _add_bibdk_subject_hierarchy_block();
 }
 
-
-
-/** Normalize a string so that it can be compared with others without being too fussy.
-*   e.g. "Ádrèñålînë" would return "adrenaline"
-*   Note: Some letters are converted into more than one letter,
-*   e.g. "ß" becomes "sz", or "æ" becomes "ae"
-*/
-function normalize_string($string) {
-    // remove whitespace, leaving only a single underscore between words.
-    $string = preg_replace('/\s+/', '_', $string);
-    // flick diacritics off of their letters
-    $string = preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml|caron);~i', '$1', htmlentities($string, ENT_COMPAT, 'UTF-8'));
-    $string = strtoupper($string);
-    // replace all non-latin1 characters with NULL
-    $string = preg_replace('/[^A-Z_]/', NULL, $string);
-    return $string;
-}
