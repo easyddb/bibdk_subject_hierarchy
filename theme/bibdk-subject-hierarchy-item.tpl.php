@@ -15,7 +15,7 @@
           <div class="themes__sublist">
             <ul>
 <?php foreach ( $variables['hierarchy']['term'] as $key => $item ) {
-    if ( !empty($item['cql']) ) {
+    if ( !empty($item['cql']) && empty($item['term']) ) {
       $url = 'search/' . $variables['search_path'] . '/' . trim($item['cql']);
       $attributes['attributes'] = array();
     } else {

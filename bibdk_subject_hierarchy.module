@@ -104,7 +104,9 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
  */
 function bibdk_subject_hierarchy_ajax_callback($key) {
 
-  $emnehierarki_item = _get_bibdk_subject_hierarchy_item($key);
+  $emnehierarki = _get_bibdk_subject_hierarchy();
+
+  $emnehierarki_item = _get_bibdk_subject_hierarchy_item($emnehierarki, $key);
   $row = $emnehierarki_item['row'];
   $level = $emnehierarki_item['level'];
 
@@ -144,18 +146,18 @@ function bibdk_subject_hierarchy_ajax_callback($key) {
  */
 function bibdk_subject_hierarchy_nojs_callback($key) {
 
-  return _get_bibdk_subject_hierarchy_item($key);
+  $emnehierarki = _get_bibdk_subject_hierarchy();
+
+  return _get_bibdk_subject_hierarchy_item($emnehierarki, $key);
 
 }
 
 
-function _get_bibdk_subject_hierarchy_item($key) {
+function _get_bibdk_subject_hierarchy_item($emnehierarki, $key) {
 
   $key_arr = explode(',',$key);
 
   $search_path = _bibdk_subject_hierarchy_search_info();
-
-  $emnehierarki = _get_bibdk_subject_hierarchy();
 
   if ( sizeof($key_arr) > 0 ) {
     $breadcrumbs  = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key_arr);
@@ -189,8 +191,8 @@ function _get_bibdk_subject_hierarchy_item($key) {
 function _get_bibdk_subject_hierarchy() {
   $emnehierarki = variable_get('subject_hierarchy', NULL);
   if ( !$emnehierarki ) {
-    _bibdk_subject_hierarchy_read_data();
-    $emnehierarki = variable_get('subject_hierarchy', NULL);
+    $emnehierarki = _bibdk_subject_hierarchy_read_data();
+    variable_set('subject_hierarchy', $emnehierarki);
   }
   return $emnehierarki;
 }
@@ -255,10 +257,11 @@ function _bibdk_subject_hierarchy_read_data() {
   $filename = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/data/emnehierarki_full.xml';
   $file = file_get_contents($filename);
   if ( $file ) {
-    _bibdk_subject_hierarchy_parse_xml($file);
+    return _bibdk_subject_hierarchy_parse_xml($file);
   } else {
     watchdog('subject_hierarchy','No XML file found.' , array(), WATCHDOG_ERROR);
   }
+  return FALSE;
 }
 
 
@@ -266,12 +269,12 @@ function _bibdk_subject_hierarchy_read_data() {
  * Parse hierarchy xml into an array
  */
 function _bibdk_subject_hierarchy_parse_xml($file) {
-    require_once('lib/xml_func.php');
-    if ( $file = utf8_encode($file) ) {
-      $emnehierarki = xml2array($file);
-      $emnehierarki = _bibdk_subject_hierarchy_parse($emnehierarki['term']);
-      variable_set('subject_hierarchy', $emnehierarki);
-    }
+  require_once('lib/xml_func.php');
+  if ( $file = utf8_encode($file) ) {
+    $emnehierarki = xml2array($file);
+    return  _bibdk_subject_hierarchy_parse($emnehierarki['term']);
+  }
+  return FALSE;
 }
 
 
@@ -292,17 +295,12 @@ function _bibdk_subject_hierarchy_parse($terms) {
 function _bibdk_subject_hierarchy_parse_term($term) {
   $record = array();
 
-  $replaceFrom = array(
-    ' og ',
-    ' eller ',
-    ' ikke',
-    'lds=',
-    'lem=',
-    'lti=',
+
+  $replaceFromShortterm = array(
+    'ds=',
     'db=',
     'df=',
     'dk=',
-    'ds=',
     'em=',
     'fl=',
     'ti=',
@@ -312,21 +310,30 @@ function _bibdk_subject_hierarchy_parse_term($term) {
     'no=',
     'ok=',
     'sp=',
-    'ti=',
+    'ti='
+  );
+
+  $replaceFromLongterm = array(
+    'lds=',
+    'ldkcclterm.ds=', // clean up from replace 'ds='
+    'lem=',
+    'ldkcclterm.em=',
+    'lti=',
+    'ldkcclterm.ti='
+  );
+
+  $replaceFromBoolean = array(
+    ' og ',
+    ' eller ',
+    ' ikke',
     '?'
   );
 
-  $replaceTo = array(
-    ' OG ',
-    ' ELLER ',
-    ' IKKE',
-    'dkcclphrase.lds=',
-    'dkcclphrase.lem=',
-    'dkcclphrase.lti=',
+  $replaceToShortterm = array(
+    'dkcclterm.ds=',
     'dkcclterm.db=',
     'dkcclterm.df=',
     'dkcclterm.dk=',
-    'dkcclterm.ds=',
     'dkcclterm.em=',
     'dkcclterm.fl=',
     'dkcclterm.ti=',
@@ -336,7 +343,22 @@ function _bibdk_subject_hierarchy_parse_term($term) {
     'dkcclterm.no=',
     'dkcclterm.ok=',
     'dkcclterm.sp=',
-    'dkcclterm.ti=',
+    'dkcclterm.ti='
+  );
+
+  $replaceToLongterm = array(
+    'dkcclphrase.lds=',
+    'dkcclphrase.lds=',
+    'dkcclphrase.lem=',
+    'dkcclphrase.lem=',
+    'dkcclphrase.lti=',
+    'dkcclphrase.lti='
+  );
+
+  $replaceToBoolean = array(
+    ' OG ',
+    ' ELLER ',
+    ' IKKE',
     '*'
   );
 
@@ -345,7 +367,10 @@ function _bibdk_subject_hierarchy_parse_term($term) {
       if ( $key == 'term' ) {
         $record[$key] = _bibdk_subject_hierarchy_parse($item);
       } elseif ( $key == 'ccl' ) {
-        $record['cql'] = str_replace($replaceFrom, $replaceTo, $item);
+        $cql = str_ireplace($replaceFromShortterm, $replaceToShortterm, $item);
+        $cql = str_ireplace($replaceFromLongterm, $replaceToLongterm, $cql);
+        $cql = str_ireplace($replaceFromBoolean, $replaceToBoolean, $cql);
+        $record['cql'] = $cql;
         $record[$key] = $item;
       } elseif ( $key == 'ord' ) {
         $record['note'] = 'LABEL_' . normalize_string($item);
@@ -357,6 +382,7 @@ function _bibdk_subject_hierarchy_parse_term($term) {
   }
   return $record;
 }
+
 
 /** Normalize a string so that it can be compared with others without being too fussy.
 *   e.g. "Ádrèñålînë" would return "adrenaline"
@@ -370,6 +396,8 @@ function normalize_string($string) {
     $string = preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml|caron);~i', '$1', htmlentities($string, ENT_COMPAT, 'UTF-8'));
     $string = strtoupper($string);
     // replace all non-latin1 characters with NULL
-    $string = preg_replace('/[^A-Z_]/', NULL, $string);
+    $string = preg_replace('/[^0-9A-Z_]/', NULL, $string);
+    $string = str_replace('__', '_', $string);
     return $string;
 }
+

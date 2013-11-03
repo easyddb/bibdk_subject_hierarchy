@@ -1,44 +1,106 @@
 <?php
 
-class BibdkCustomSearchUnitTestCase extends DrupalUnitTestCase {
+class BibdkSubjectHierarchyUnitTestCase extends DrupalUnitTestCase {
 
   public static function getInfo() {
     return array(
-      'name' => 'Custom Search Unit Test',
-      'description' => 'Bibdk Custom Unit test.',
-      'group' => 'Bibliotek.dk  - Custom Search',
+      'name' => 'Bibdk Subject Hierarchy Unit Test',
+      'description' => 'Bibdk Subject Hierarchy Unit test.',
+      'group' => 'Bibliotek.dk  - Subject Hierarchy',
     );
   }
 
-  public function test_bibdk_custom_search_is_advanced_search_expanded() {
+  public function test_bibdk_subject_hierarchy_unit_test() {
 
-    module_load_include('module', 'bibdk_custom_search', 'bibdk_custom_search');
+    module_load_include('module', 'bibdk_subject_hierarchy', 'bibdk_subject_hierarchy');
+    // include_once('emnehierarki_test_data.php');
 
-    // Test empty query
-    $get = array();
-    $result = _bibdk_custom_search_is_advanced_search_expanded($get);
-    $this->assertFalse($result, 'Do not expand if query is empty');
+    // test XML hierarchy is present
+    $this->assertTrue(_bibdk_subject_hierarchy_read_data(), 'XML hierarchy file is present.');
 
-    // Test default query
-    $get = array(
-      'qe' => array(
-        'year.op' => array('year_eq'),
-      ),
-      'q' => 'bibdk_frontpage',
+    // test string normalizing
+    $normalized_in = 'æøå é1 + foo';
+    $normalized_out = 'AEOA_E1_FOO';
+    $normalized = normalize_string($normalized_in);
+    $this->assertTrue(
+      ( $normalized == $normalized_out ),
+      'Test term note normalized.'
     );
 
-    $result = _bibdk_custom_search_is_advanced_search_expanded($get);
-    $this->assertTrue($result, 'Do not expand when on frontpage and default search');
-
-    // Test advanced query
-    $get = array(
-      'qe' => array(
-        'year.op' => array('year_eq'),
-        'work' => 'test',
-      ),
-      'q' => 'bibdk_frontpage',
+    // test replace of search terms
+    $parse_term_in = array(
+      'ccl' => 'lds=foo',
     );
-    $result = _bibdk_custom_search_is_advanced_search_expanded($get);
-    $this->assertFalse($result, 'Expand if advanced elements have been set');
+    $parse_term_out = 'dkcclphrase.lds=foo';
+
+    $parsed = _bibdk_subject_hierarchy_parse_term($parse_term_in);
+    $this->assertTrue(
+      ( $parsed['cql'] == $parse_term_out ),
+      'Test term cql search terme replaced correctly.'
+    );
+
+    // test replace of boolean operators
+    $parse_term_in = array(
+      'ccl' => 'foo og bar?',
+    );
+    $parse_term_out = 'foo OG bar*';
+
+    $parsed = _bibdk_subject_hierarchy_parse_term($parse_term_in);
+    $this->assertTrue(
+      ( $parsed['cql'] == $parse_term_out ),
+      'Test term cql boolaen operators and truncation replaced correctly.'
+    );
+
+    $parse_term_0_in = array(
+      'ord' => 'ord level 0',
+    );
+
+    $parse_term_0_out = array(
+      'ord' => 'label ord level 0',
+      'ccl' => 'lds=foo',
+      'cql' => 'dkcclphrase.lds=foo',
+      'note' => 'LABEL_ORD_LEVEL0'
+    );
+
+    $parsed = _bibdk_subject_hierarchy_parse_term($parse_term_0_in);
+    $this->assertTrue(
+      ( $parsed['note'] == 'LABEL_ORD_LEVEL_0' ),
+      'Test term note parsed correctly.'
+    );
+
+    // get test data
+    $filename = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/data/emnehierarki_test.xml';
+    $file = file_get_contents($filename);
+    $this->assertTrue($file, 'Test XML file exist.');
+
+    // test _bibdk_subject_hierarchy_parse_xml($file) 
+    $emnehierarki_out =
+      'a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL0";s:3:"ord";s:10:"ord level0";s:3:"cql";s:10:"ccl level0";s:3:"ccl";s:10:"ccl level0";s:9:"kommentar";s:16:"kommentar level0";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL1";s:3:"ord";s:10:"Ord level1";s:3:"cql";s:10:"ccl level1";s:3:"ccl";s:10:"ccl level1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL2";s:3:"ord";s:10:"Ord level2";s:3:"cql";s:10:"ccl level2";s:3:"ccl";s:10:"ccl level2";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:3:{i:0;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL30";s:3:"ord";s:12:"Ord level3.0";s:3:"cql";s:12:"ccl level3.0";s:3:"ccl";s:12:"ccl level3.0";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}i:1;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL31";s:3:"ord";s:12:"Ord level3.1";s:3:"cql";s:12:"ccl level3.1";s:3:"ccl";s:12:"ccl level3.1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}i:2;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL32";s:3:"ord";s:12:"Ord level3.2";s:3:"cql";s:12:"ccl level3.2";s:3:"ccl";s:12:"ccl level3.2";s:9:"kommentar";s:6:"poster";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}}}}}}}}';
+    if ( $file ) {
+      $emnehierarki_test = _bibdk_subject_hierarchy_parse_xml($file);
+      $this->assertTrue(
+        (serialize($emnehierarki_test) == $emnehierarki_out),
+        'Test XML file parsed correctly.'
+      );
+    }
+    
+    // test _bibdk_subject_hierarchy_parse_term($term) 
+    $breadcrumbs_out = 
+      'a:4:{i:0;a:5:{s:3:"ord";s:10:"ord level0";s:3:"url";s:30:"bibdk_subject_hierarchy/nojs/0";s:3:"key";s:1:"0";s:9:"keys_path";s:1:"0";s:10:"attributes";a:1:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:8:"use-ajax";}}}}i:1;a:5:{s:3:"ord";s:10:"Ord level1";s:3:"url";s:32:"bibdk_subject_hierarchy/nojs/0,0";s:3:"key";s:1:"0";s:9:"keys_path";s:3:"0,0";s:10:"attributes";a:1:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:8:"use-ajax";}}}}i:2;a:5:{s:3:"ord";s:10:"Ord level2";s:3:"url";s:34:"bibdk_subject_hierarchy/nojs/0,0,0";s:3:"key";s:1:"0";s:9:"keys_path";s:5:"0,0,0";s:10:"attributes";a:1:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:8:"use-ajax";}}}}i:3;a:5:{s:3:"ord";s:12:"Ord level3.1";s:3:"url";s:24:"search/work/ccl level3.1";s:3:"key";s:1:"1";s:9:"keys_path";s:7:"0,0,0,1";s:10:"attributes";a:1:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:4:"last";}}}}}';
+    $breadcrumbs  = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki_test, array('0', '0', '0', '1'));
+    $this->assertTrue(
+      (serialize($breadcrumbs) == $breadcrumbs_out),
+      'Test XML file breadcrumbs parsed correctly.'
+    );
+
+    // tect _get_bibdk_subject_hierarchy_level()
+    $hierarchy_level_out = 
+      'a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL31";s:3:"ord";s:12:"Ord level3.1";s:3:"cql";s:12:"ccl level3.1";s:3:"ccl";s:12:"ccl level3.1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}';
+    $hierarchy_level = _get_bibdk_subject_hierarchy_level($emnehierarki_test[0], array('0', '0', '1'));
+    $this->assertTrue(
+      (serialize($hierarchy_level) == $hierarchy_level_out),
+      'Test retrieval of hierarchy sublevel works correctly.'
+    );
+    
   }
 }
