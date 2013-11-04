@@ -26,7 +26,7 @@
 
   if ( in_array($key, array(4,8)) ) {
     $row = $key/4;
-    echo '      <div class="themes__sublists__wrapper row-' . $row . '"><div class="themes__sublists">fubar</div></div>' . "\n";
+    echo '      <div class="themes__sublists__wrapper row-' . $row . '"></div>' . "\n";
     echo '    </div><div class="themes_row  clearfix">' . "\n";
   }
 ?>
@@ -39,7 +39,7 @@
 <?php
 }
 ?>
-      <div class="themes__sublists__wrapper row-3"><div class="themes__sublists">fubar</div></div>
+      <div class="themes__sublists__wrapper row-3"></div>
 
     </div>
     <!-- .themes__row -->
