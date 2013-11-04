@@ -32,36 +32,50 @@ class BibdkSubjectHierarchyUnitTestCase extends DrupalUnitTestCase {
       'ccl' => 'lds=foo',
     );
     $parse_term_out = 'dkcclphrase.lds=foo';
-
     $parsed = _bibdk_subject_hierarchy_parse_term($parse_term_in);
     $this->assertTrue(
       ( $parsed['cql'] == $parse_term_out ),
-      'Test term cql search terme replaced correctly.'
+      'Test term cql search term (phrase) replaced correctly.'
     );
 
-    // test replace of boolean operators
+    // test replace of search terms
     $parse_term_in = array(
-      'ccl' => 'foo og bar?',
+      'ccl' => 'em=foo',
     );
-    $parse_term_out = 'foo OG bar*';
-
+    $parse_term_out = 'dkcclterm.em=foo';
     $parsed = _bibdk_subject_hierarchy_parse_term($parse_term_in);
     $this->assertTrue(
       ( $parsed['cql'] == $parse_term_out ),
-      'Test term cql boolaen operators and truncation replaced correctly.'
+      'Test term cql search terms (term) replaced correctly.'
     );
 
+    // test replace of search terms
+    $parse_term_in = array(
+      'ccl' => 'foo og bar',
+    );
+    $parse_term_out = 'foo OG bar';
+
+    // test replace of search terms
+    $parse_term_in = array(
+      'ccl' => 'foo?',
+    );
+    $parse_term_out = 'foo*';
+    $parsed = _bibdk_subject_hierarchy_parse_term($parse_term_in);
+    $this->assertTrue(
+      ( $parsed['cql'] === $parse_term_out ),
+      'Test term cql search truncation replaced correctly.'
+    );
+
+    // test parsing of note
     $parse_term_0_in = array(
       'ord' => 'ord level 0',
     );
-
     $parse_term_0_out = array(
       'ord' => 'label ord level 0',
       'ccl' => 'lds=foo',
       'cql' => 'dkcclphrase.lds=foo',
       'note' => 'LABEL_ORD_LEVEL0'
     );
-
     $parsed = _bibdk_subject_hierarchy_parse_term($parse_term_0_in);
     $this->assertTrue(
       ( $parsed['note'] == 'LABEL_ORD_LEVEL_0' ),
@@ -73,7 +87,7 @@ class BibdkSubjectHierarchyUnitTestCase extends DrupalUnitTestCase {
     $file = file_get_contents($filename);
     $this->assertTrue($file, 'Test XML file exist.');
 
-    // test _bibdk_subject_hierarchy_parse_xml($file) 
+    // test _bibdk_subject_hierarchy_parse_xml($file)
     $emnehierarki_out =
       'a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL0";s:3:"ord";s:10:"ord level0";s:3:"cql";s:10:"ccl level0";s:3:"ccl";s:10:"ccl level0";s:9:"kommentar";s:16:"kommentar level0";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL1";s:3:"ord";s:10:"Ord level1";s:3:"cql";s:10:"ccl level1";s:3:"ccl";s:10:"ccl level1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL2";s:3:"ord";s:10:"Ord level2";s:3:"cql";s:10:"ccl level2";s:3:"ccl";s:10:"ccl level2";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:3:{i:0;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL30";s:3:"ord";s:12:"Ord level3.0";s:3:"cql";s:12:"ccl level3.0";s:3:"ccl";s:12:"ccl level3.0";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}i:1;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL31";s:3:"ord";s:12:"Ord level3.1";s:3:"cql";s:12:"ccl level3.1";s:3:"ccl";s:12:"ccl level3.1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}i:2;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL32";s:3:"ord";s:12:"Ord level3.2";s:3:"cql";s:12:"ccl level3.2";s:3:"ccl";s:12:"ccl level3.2";s:9:"kommentar";s:6:"poster";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}}}}}}}}';
     if ( $file ) {
@@ -83,9 +97,9 @@ class BibdkSubjectHierarchyUnitTestCase extends DrupalUnitTestCase {
         'Test XML file parsed correctly.'
       );
     }
-    
-    // test _bibdk_subject_hierarchy_parse_term($term) 
-    $breadcrumbs_out = 
+
+    // test _bibdk_subject_hierarchy_parse_term($term)
+    $breadcrumbs_out =
       'a:4:{i:0;a:5:{s:3:"ord";s:10:"ord level0";s:3:"url";s:30:"bibdk_subject_hierarchy/nojs/0";s:3:"key";s:1:"0";s:9:"keys_path";s:1:"0";s:10:"attributes";a:1:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:8:"use-ajax";}}}}i:1;a:5:{s:3:"ord";s:10:"Ord level1";s:3:"url";s:32:"bibdk_subject_hierarchy/nojs/0,0";s:3:"key";s:1:"0";s:9:"keys_path";s:3:"0,0";s:10:"attributes";a:1:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:8:"use-ajax";}}}}i:2;a:5:{s:3:"ord";s:10:"Ord level2";s:3:"url";s:34:"bibdk_subject_hierarchy/nojs/0,0,0";s:3:"key";s:1:"0";s:9:"keys_path";s:5:"0,0,0";s:10:"attributes";a:1:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:8:"use-ajax";}}}}i:3;a:5:{s:3:"ord";s:12:"Ord level3.1";s:3:"url";s:24:"search/work/ccl level3.1";s:3:"key";s:1:"1";s:9:"keys_path";s:7:"0,0,0,1";s:10:"attributes";a:1:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:4:"last";}}}}}';
     $breadcrumbs  = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki_test, array('0', '0', '0', '1'));
     $this->assertTrue(
@@ -94,13 +108,13 @@ class BibdkSubjectHierarchyUnitTestCase extends DrupalUnitTestCase {
     );
 
     // tect _get_bibdk_subject_hierarchy_level()
-    $hierarchy_level_out = 
+    $hierarchy_level_out =
       'a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL31";s:3:"ord";s:12:"Ord level3.1";s:3:"cql";s:12:"ccl level3.1";s:3:"ccl";s:12:"ccl level3.1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}';
     $hierarchy_level = _get_bibdk_subject_hierarchy_level($emnehierarki_test[0], array('0', '0', '1'));
     $this->assertTrue(
       (serialize($hierarchy_level) == $hierarchy_level_out),
       'Test retrieval of hierarchy sublevel works correctly.'
     );
-    
+
   }
 }
