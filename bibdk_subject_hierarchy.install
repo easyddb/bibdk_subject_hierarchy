@@ -10,7 +10,7 @@
  * Implements hook_enable().
  */
 function bibdk_subject_hierarchy_enable() {
-  _bibdk_subject_hierarchy_read_data();
+  _get_bibdk_subject_hierarchy();
 }
 
 
