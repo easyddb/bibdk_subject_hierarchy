@@ -396,6 +396,7 @@ function normalize_string($string) {
     // replace all non-latin1 characters with NULL
     $string = preg_replace('/[^0-9A-Z_]/', NULL, $string);
     $string = str_replace('__', '_', $string);
+    $string = str_replace('_AMP_', '_', $string); // ditch "&"
     return $string;
 }
 
