@@ -6,7 +6,7 @@
               xsi:schemaLocation="http://www.bs.dk/standards/emnehierarki
                                   http://emnehierarki.dbc.dk/emnehierarkiFull_2007-10-25.xsd">
   <term>
-    <ord>Menneske og samfund</ord>
+    <ord>Menneske &#38; samfund</ord>
     <ccl></ccl>
     <kommentar></kommentar>
     <hjaelpetekst></hjaelpetekst>
@@ -1389,7 +1389,7 @@ em=børn</ccl>
     </term>
   </term>
   <term>
-    <ord>Sundhed og sygdom</ord>
+    <ord>Sundhed &#38; sygdom</ord>
     <ccl>(ok=61 ikke ma=pe ikke em=lærebøger)</ccl>
     <kommentar>Lidt mere en 200 titler - med overvægt på sygdom men også sundhed</kommentar>
     <hjaelpetekst></hjaelpetekst>
@@ -3503,7 +3503,7 @@ df=skønhedspleje : 33 poster - udelukkende 61-bøger&#x2026;</kommentar>
     </term>
   </term>
   <term>
-    <ord>Hjem og fritid</ord>
+    <ord>Hjem &#38; fritid</ord>
     <ccl></ccl>
     <kommentar>dette er en test</kommentar>
     <hjaelpetekst></hjaelpetekst>
@@ -5898,7 +5898,7 @@ Udfoldes ikke - listeproblematikken</kommentar>
     </term>
   </term>
   <term>
-    <ord>Pædagogik, psykologi, undervisning og uddannelse</ord>
+    <ord>Pædagogik, psykologi &#38; uddannelse</ord>
     <ccl></ccl>
     <kommentar></kommentar>
     <hjaelpetekst></hjaelpetekst>
@@ -7007,7 +7007,7 @@ df=psykologiske teorier eller ok=13.09
     </term>
   </term>
   <term>
-    <ord>Samfundet, økonomi og politik</ord>
+    <ord>Samfundet, økonomi &#38; politik</ord>
     <ccl></ccl>
     <kommentar>ingen ccl laves</kommentar>
     <hjaelpetekst></hjaelpetekst>
@@ -9480,7 +9480,7 @@ dk=33.953 og kk=sfd?</kommentar>
     </term>
   </term>
   <term>
-    <ord>Lande: Historie, rejser og sprog</ord>
+    <ord>Historie, rejser &#38; sprog</ord>
     <ccl></ccl>
     <kommentar>ingen ccl laves</kommentar>
     <hjaelpetekst></hjaelpetekst>
@@ -13718,7 +13718,7 @@ Hvis du søger sprogkurser, skal du ændre Kun bøger til Alle materialer&#60;/b
     </term>
   </term>
   <term>
-    <ord>IT, medier og kommunikation</ord>
+    <ord>IT, medier &#38; kommunikation</ord>
     <ccl>ok=19.5 og (ti=(it eller informationsteknologi eller ict eller ikt) eller em=informationsteknologi) ikke medier ikke fl=(amt eller kommun*)</ccl>
     <kommentar>93 poster</kommentar>
     <hjaelpetekst></hjaelpetekst>
@@ -14456,7 +14456,7 @@ Android og IOS se under &#34;Computere - styresystemer&#34;</hjaelpetekst>
     </term>
   </term>
   <term>
-    <ord>Erhvervsliv og brancher</ord>
+    <ord>Fag, erhverv &#38; brancher</ord>
     <ccl></ccl>
     <kommentar>Ingen ccl laves</kommentar>
     <hjaelpetekst></hjaelpetekst>
@@ -16185,7 +16185,7 @@ Følger søgestrengen i &#34;Samfund, økonomi og politik&#34;</kommentar>
     </term>
   </term>
   <term>
-    <ord>Forskning, natur og teknik</ord>
+    <ord>Forskning, natur &#38; teknik</ord>
     <ccl>((ok=50 eller ok=60) og em=(naturvidenskab eller teknik)) ikke ma=(pe eller bs)</ccl>
     <kommentar>Det er nødvendigt at kunne sortere periodica fra i de store brede grupper.</kommentar>
     <hjaelpetekst></hjaelpetekst>
@@ -17916,7 +17916,7 @@ Periodika må fjernes hvis det skal du</kommentar>
     </term>
   </term>
   <term>
-    <ord>Filosofi og religion</ord>
+    <ord>Filosofi &#38; religion</ord>
     <ccl></ccl>
     <kommentar>Ingen ccl lavet.
 Dette er en term på øverste niveau</kommentar>
@@ -19249,7 +19249,7 @@ Udgår: jødedom, islam, Kina. Ikke nok litt.</kommentar>
     </term>
   </term>
   <term>
-    <ord>Litteratur, arkitektur, kunst, film, tv, teater og musik</ord>
+    <ord>Kunst &#38; kultur</ord>
     <ccl></ccl>
     <kommentar>ingen ccl laves</kommentar>
     <hjaelpetekst></hjaelpetekst>
@@ -21626,7 +21626,7 @@ ok=7? og ke=motiver ikke em=?teknik
     </term>
   </term>
   <term>
-    <ord>Skønlitteratur og biografier</ord>
+    <ord>Skønlitteratur &#38; biografier</ord>
     <ccl></ccl>
     <kommentar>ingen ccl laves</kommentar>
     <hjaelpetekst></hjaelpetekst>
