@@ -315,7 +315,8 @@ function _bibdk_subject_hierarchy_parse_term($term) {
     'no=',
     'ok=',
     'sp=',
-    'ti='
+    'ti=',
+    'fo='
   );
 
   $replaceFromLongterm = array(
@@ -347,7 +348,8 @@ function _bibdk_subject_hierarchy_parse_term($term) {
     'dkcclterm.no=',
     'dkcclterm.ok=',
     'dkcclterm.sp=',
-    'dkcclterm.ti='
+    'dkcclterm.ti=',
+    'dkcclterm.fo='
   );
 
   $replaceToLongterm = array(
