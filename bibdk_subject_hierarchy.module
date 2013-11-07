@@ -1,0 +1,408 @@
+<?php
+/**
+ * @file
+ * Bibliotek.dk subject hierarchy module main file.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function bibdk_subject_hierarchy_menu() {
+  // Returns AJAX commands if the user has JavaScript turned on.
+  $items['bibdk_subject_hierarchy/ajax/%'] = array(
+    'title' => 'bibdk_subject_hierarchy callback',
+    'page callback' => 'bibdk_subject_hierarchy_ajax_callback',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  // Returns a Non-JavaScript alternative.
+  $items['bibdk_subject_hierarchy/nojs/%'] = array(
+    'title' => 'bibdk_subject_hierarchy non-javascript callback',
+    'page callback' => 'bibdk_subject_hierarchy_nojs_callback',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+  );
+  return $items;
+}
+
+
+/**
+ * Implements hook_help().
+ */
+function bibdk_subject_hierarchy_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#bibdk_subject_hierarchy';
+      $file = drupal_get_path('module', 'bibdk_subject_hierarchy') . "/help/bibdk_subject_hierarchy.help";
+      return $output = file_get_contents($file);
+    break;
+  }
+}
+
+
+/**
+ * Implements hook_block_info().
+ */
+function bibdk_subject_hierarchy_block_info() {
+  $blocks['bibdk-subject-hierarchy'] = array(
+      'title' => '<none>',
+      'info'  => t('Bibliotek.dk subject hierarchy'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    );
+  return $blocks;
+}
+
+
+/**
+ * Implements hook_block_view().
+ */
+function bibdk_subject_hierarchy_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'bibdk-subject-hierarchy':
+      // Load in Drupal core AJAX library.
+      drupal_add_library('system', 'drupal.ajax');
+      drupal_add_js(drupal_get_path('module', 'bibdk_subject_hierarchy') . '/js/bibdk_subject_hierarchy.js');
+      $block['title'] = '<none>';
+      $block['subject'] = t('Bibliotek.dk subject hierarchy', array());
+      $block['content'] = theme(
+                            'bibdk_subject_hierarchy',
+                            array(
+                              'hierarchy' => _get_bibdk_subject_hierarchy(),
+                              'path' => _bibdk_subject_hierarchy_search_info(),
+                              'header' => 'HEADER_BIBDK_SUBJECT_HIERARCHY',
+                            )
+                          );
+      break;
+  }
+  return $block;
+}
+
+
+/**
+ * Implements hook_theme().
+ */
+function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
+  $path = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/theme';
+  return array(
+    'bibdk_subject_hierarchy' => array(
+      'variables' => array('hierarchy' => NULL, 'header' => NULL, ),
+      'path' => $path,
+      'template'    => 'bibdk-subject-hierarchy',
+    ),
+    'bibdk_subject_hierarchy_item' => array(
+      'variables' => array('hierarchy' => NULL, 'breadcrumbs' => NULL, 'current_key' => NULL, 'search_path' => NULL),
+      'path' => $path,
+      'template'    => 'bibdk-subject-hierarchy-item',
+    ),
+  );
+}
+
+
+/**
+ * AJAX callback
+ */
+function bibdk_subject_hierarchy_ajax_callback($key) {
+
+  $emnehierarki = _get_bibdk_subject_hierarchy();
+
+  $emnehierarki_item = _get_bibdk_subject_hierarchy_item($emnehierarki, $key);
+  $row = $emnehierarki_item['row'];
+  $level = $emnehierarki_item['level'];
+
+  // Create a new AJAX command that replaces the .themes__sublists__wrapper text.
+  $ajax_commands[] = ajax_command_replace(
+    '.themes__sublists__wrapper.row-' . $row,
+    '<div class="themes__sublists__wrapper row-' . $row . '">' . drupal_render($emnehierarki_item) . '</div>'
+  );
+  $ajax_commands[] = ajax_command_invoke(
+    '.themes__sublists__wrapper',
+    'fadeOut',
+    array('200')
+  );
+  $ajax_commands[] = ajax_command_invoke(
+    '.themes__sublists__wrapper.row-' . $row,
+    'fadeIn',
+    array('200')
+  );
+  $ajax_commands[] = ajax_command_invoke(
+    '.themes__item',
+    'removeClass',
+    array('themes__item--active')
+  );
+  $ajax_commands[] = ajax_command_invoke(
+    '.themes__item.item-' . $level,
+    'addClass',
+    array('themes__item--active')
+  );
+
+  // Return our commands in JSON.
+  return drupal_json_output($ajax_commands);
+}
+
+
+/**
+ * Non-JavaScript callback.
+ */
+function bibdk_subject_hierarchy_nojs_callback($key) {
+
+  $emnehierarki = _get_bibdk_subject_hierarchy();
+
+  return _get_bibdk_subject_hierarchy_item($emnehierarki, $key);
+
+}
+
+
+function _get_bibdk_subject_hierarchy_item($emnehierarki, $key) {
+
+  $key_arr = explode(',',$key);
+
+  $search_path = _bibdk_subject_hierarchy_search_info();
+
+  if ( sizeof($key_arr) > 0 ) {
+    $breadcrumbs  = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key_arr);
+  }
+
+  $level = array_shift($key_arr);
+
+  // Define a new array to hold our AJAX commands.
+  $ajax_commands = array();
+  $row = ceil(($level+1)/4);
+
+  $emnehierarki = $emnehierarki[$level];
+
+  if ( sizeof($key_arr) > 0 ) {
+    $emnehierarki = _get_bibdk_subject_hierarchy_level($emnehierarki, $key_arr);
+  }
+
+  return array(
+    '#theme' => 'bibdk_subject_hierarchy_item',
+    '#breadcrumbs' => $breadcrumbs,
+    '#hierarchy' => $emnehierarki,
+    '#current_key' => $key,
+    '#search_path' => $search_path,
+    'row' => $row,
+    'level' => $level
+  );
+
+}
+
+
+function _get_bibdk_subject_hierarchy() {
+  $emnehierarki = variable_get('subject_hierarchy', NULL);
+  if ( !$emnehierarki ) {
+    $emnehierarki = _bibdk_subject_hierarchy_read_data();
+    variable_set('subject_hierarchy', $emnehierarki);
+  }
+  return $emnehierarki;
+}
+
+
+function _update_bibdk_subject_hierarchy() {
+  $emnehierarki = _bibdk_subject_hierarchy_read_data();
+  variable_set('subject_hierarchy', $emnehierarki);
+}
+
+
+function _bibdk_subject_hierarchy_search_info() {
+  $path = '';
+  $search_info = search_get_default_module_info();
+  if ( !empty($search_info['path']) && in_array($search_info['module'], variable_get('search_active_modules', array())) ) {
+    $path = $search_info['path'];
+  }
+  return $path;
+}
+
+
+function _get_bibdk_subject_hierarchy_level($emnehierarki, $key) {
+  $level = array_shift($key);
+  if ( isset($emnehierarki['term']) && isset($emnehierarki['term'][$level]) ) {
+    $emnehierarki = $emnehierarki['term'][$level];
+  }
+  if ( sizeof($key) > 0 ) {
+    $emnehierarki = _get_bibdk_subject_hierarchy_level($emnehierarki, $key);
+  }
+  return $emnehierarki;
+}
+
+
+function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key, $breadcrumbs = array()) {
+
+  $level = array_shift($key);
+
+  $path = _bibdk_subject_hierarchy_search_info();
+
+  foreach ($breadcrumbs as $n => $breadcrumb) {
+    $breadcrumbs[$n]['url'] = 'bibdk_subject_hierarchy/nojs/' . $breadcrumbs[$n]['keys_path'];
+    $breadcrumbs[$n]['attributes'] = array('attributes' => array('class' => array('use-ajax')));
+    $keys_path[] = $breadcrumb['key'];
+  }
+  $keys_path[] = $level;
+
+  $breadcrumbs[]   = array(
+    'ord' => $emnehierarki[$level]['ord'],
+    'url' => ( !empty($emnehierarki[$level]['cql']) ) ? 'search/' . $path . '/' . $emnehierarki[$level]['cql'] : 'bibdk_subject_hierarchy/nojs/' . implode(',', $keys_path),
+    'key' => $level,
+    'keys_path' => implode(',', $keys_path),
+    'attributes' => ( !empty($emnehierarki[$level]['cql']) ) ? array('attributes' => array('class' => array('last'))) : array('attributes' => array('class' => array('use-ajax'))),
+  );
+
+  if ( sizeof($key) > 0 && isset($emnehierarki[$level]['term']) && isset($emnehierarki[$level]['term']) ) {
+    $breadcrumbs = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki[$level]['term'], $key, $breadcrumbs);
+  }
+
+  return $breadcrumbs;
+
+}
+
+
+/**
+ * Parse hierarchy xml into an array
+ */
+function _bibdk_subject_hierarchy_read_data() {
+  $filename = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/data/emnehierarki_full.xml';
+  $file = file_get_contents($filename);
+  if ( $file ) {
+    return _bibdk_subject_hierarchy_parse_xml($file);
+  } else {
+    watchdog('subject_hierarchy','No XML file found.' , array(), WATCHDOG_ERROR);
+  }
+  return FALSE;
+}
+
+
+/**
+ * Parse hierarchy xml into an array
+ */
+function _bibdk_subject_hierarchy_parse_xml($file) {
+  require_once('lib/xml_func.php');
+  if ( $file = utf8_encode($file) ) {
+    $emnehierarki = xml2array($file);
+    return  _bibdk_subject_hierarchy_parse($emnehierarki['term']);
+  }
+  return FALSE;
+}
+
+
+/**
+ * Parse hierarchy xml into an array
+ */
+function _bibdk_subject_hierarchy_parse($terms) {
+  while ( list($n,$term) = each($terms) ) {
+    $record[$n] = _bibdk_subject_hierarchy_parse_term($term);
+  }
+  return $record;
+}
+
+
+/**
+ * Parse hierarchy term
+ */
+function _bibdk_subject_hierarchy_parse_term($term) {
+  $record = array();
+
+
+  $replaceFromShortterm = array(
+    'ds=',
+    'db=',
+    'df=',
+    'dk=',
+    'em=',
+    'fl=',
+    'ke=',
+    'kk=',
+    'ma=',
+    'no=',
+    'ok=',
+    'sp=',
+    'ti='
+  );
+
+  $replaceFromLongterm = array(
+    'lds=',
+    'ldkcclterm.ds=', // clean up from replace 'ds='
+    'lem=',
+    'ldkcclterm.em=',
+    'lti=',
+    'ldkcclterm.ti='
+  );
+
+  $replaceFromBoolean = array(
+    ' og ',
+    ' eller ',
+    ' ikke',
+    '?'
+  );
+
+  $replaceToShortterm = array(
+    'dkcclterm.ds=',
+    'dkcclterm.db=',
+    'dkcclterm.df=',
+    'dkcclterm.dk=',
+    'dkcclterm.em=',
+    'dkcclterm.fl=',
+    'dkcclterm.ke=',
+    'dkcclterm.kk=',
+    'dkcclterm.ma=',
+    'dkcclterm.no=',
+    'dkcclterm.ok=',
+    'dkcclterm.sp=',
+    'dkcclterm.ti='
+  );
+
+  $replaceToLongterm = array(
+    'dkcclphrase.lds=',
+    'dkcclphrase.lds=',
+    'dkcclphrase.lem=',
+    'dkcclphrase.lem=',
+    'dkcclphrase.lti=',
+    'dkcclphrase.lti='
+  );
+
+  $replaceToBoolean = array(
+    ' OG ',
+    ' ELLER ',
+    ' IKKE',
+    '*'
+  );
+
+  while ( list($key, $item) = each($term) ) {
+    if ( (string)$key != (string)(int)$key ) {
+      if ( $key == 'term' ) {
+        $record[$key] = _bibdk_subject_hierarchy_parse($item);
+      } elseif ( $key == 'ccl' ) {
+        $cql = str_ireplace($replaceFromShortterm, $replaceToShortterm, $item);
+        $cql = str_ireplace($replaceFromLongterm, $replaceToLongterm, $cql);
+        $cql = str_ireplace($replaceFromBoolean, $replaceToBoolean, $cql);
+        $record['cql'] = $cql;
+        $record[$key] = $item;
+      } elseif ( $key == 'ord' ) {
+        $record['note'] = 'LABEL_' . normalize_string($item);
+        $record[$key] = $item;
+      } else {
+        $record[$key] = $item;
+      }
+    }
+  }
+  return $record;
+}
+
+
+/** Normalize a string so that it can be compared with others without being too fussy.
+*   e.g. "Ádrèñålînë" would return "adrenaline"
+*   Note: Some letters are converted into more than one letter,
+*   e.g. "ß" becomes "sz", or "æ" becomes "ae"
+*/
+function normalize_string($string) {
+    // remove whitespace, leaving only a single underscore between words.
+    $string = preg_replace('/\s+/', '_', $string);
+    // flick diacritics off of their letters
+    $string = preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml|caron);~i', '$1', htmlentities($string, ENT_COMPAT, 'UTF-8'));
+    $string = strtoupper($string);
+    // replace all non-latin1 characters with NULL
+    $string = preg_replace('/[^0-9A-Z_]/', NULL, $string);
+    $string = str_replace('__', '_', $string);
+    $string = str_replace('_AMP_', '_', $string); // ditch "&"
+    return $string;
+}
+
