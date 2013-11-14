@@ -159,8 +159,10 @@ function _get_bibdk_subject_hierarchy_item($emnehierarki, $key) {
 
   $search_path = _bibdk_subject_hierarchy_search_info();
 
+  $path = _bibdk_subject_hierarchy_search_info();
+
   if ( sizeof($key_arr) > 0 ) {
-    $breadcrumbs  = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key_arr);
+    $breadcrumbs  = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key_arr, $path);
   }
 
   $level = array_shift($key_arr);
@@ -226,11 +228,9 @@ function _get_bibdk_subject_hierarchy_level($emnehierarki, $key) {
 }
 
 
-function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key, $breadcrumbs = array()) {
+function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key, $path = 'work', $breadcrumbs = array()) {
 
   $level = array_shift($key);
-
-  $path = _bibdk_subject_hierarchy_search_info();
 
   foreach ($breadcrumbs as $n => $breadcrumb) {
     $breadcrumbs[$n]['url'] = 'bibdk_subject_hierarchy/nojs/' . $breadcrumbs[$n]['keys_path'];
@@ -248,7 +248,7 @@ function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key, $breadcru
   );
 
   if ( sizeof($key) > 0 && isset($emnehierarki[$level]['term']) && isset($emnehierarki[$level]['term']) ) {
-    $breadcrumbs = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki[$level]['term'], $key, $breadcrumbs);
+    $breadcrumbs = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki[$level]['term'], $key, $path, $breadcrumbs);
   }
 
   return $breadcrumbs;
@@ -315,7 +315,8 @@ function _bibdk_subject_hierarchy_parse_term($term) {
     'no=',
     'ok=',
     'sp=',
-    'ti='
+    'ti=',
+    'fo='
   );
 
   $replaceFromLongterm = array(
@@ -347,7 +348,8 @@ function _bibdk_subject_hierarchy_parse_term($term) {
     'dkcclterm.no=',
     'dkcclterm.ok=',
     'dkcclterm.sp=',
-    'dkcclterm.ti='
+    'dkcclterm.ti=',
+    'dkcclterm.fo='
   );
 
   $replaceToLongterm = array(

@@ -1139,22 +1139,6 @@ em=børn</ccl>
         <visundermenu>0</visundermenu>
       </term>
       <term>
-        <ord>Skriv emne</ord>
-        <ccl></ccl>
-        <kommentar></kommentar>
-        <hjaelpetekst></hjaelpetekst>
-        <infotekst>infotekst</infotekst>
-        <visundermenu>1</visundermenu>
-      </term>
-      <term>
-        <ord>Skriv emne</ord>
-        <ccl></ccl>
-        <kommentar></kommentar>
-        <hjaelpetekst></hjaelpetekst>
-        <infotekst>infotekst</infotekst>
-        <visundermenu>1</visundermenu>
-      </term>
-      <term>
         <ord>Livsstil og fritidsanvendelse</ord>
         <ccl>(em=livsstil eller em=fritid? eller em=arbejds? eller em=tid?) og ok=(30.12 eller 39.8)</ccl>
         <kommentar>27 poster</kommentar>
