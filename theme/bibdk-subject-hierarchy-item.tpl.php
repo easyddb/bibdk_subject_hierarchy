@@ -3,6 +3,8 @@
  * @file
  * Theme implementation for bibdk_subject_hierarchy_item.
  */
+dsm(__FILE__);
+dpm($variables);
 ?>
 
 <div class="themes__sublists">
@@ -24,7 +26,6 @@
           $attributes['attributes']['class'] = array('use-ajax');
         }
         echo '<li>' . l($item['ord'], $url, $attributes) . "</li>\n";
-        // ex.    <li><a href="#">Familieliv - samlivsformer (132)</a></li>
       } ?>
     </ul>
   </div>
