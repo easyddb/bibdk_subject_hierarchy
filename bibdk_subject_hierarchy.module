@@ -126,7 +126,7 @@ function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
   $rendered = array(
     '#theme' => 'bibdk_subject_hierarchy',
     '#rows' => $rows,
-    '#header' => _bibdk_subject_hierarchy_translate('HEADER_BIBDK_SUBJECT_HIERARCHY'),
+    '#header' =>  t('HEADER_BIBDK_SUBJECT_HIERARCHY', array(), array('context' => 'bibdk_subject_hierarchy')),
   );
 
   return $rendered;
@@ -139,24 +139,21 @@ function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
  * @return array
  */
 function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
-  $rows = array();
   $rendered = array();
 
-  foreach ($hierarchy as $index => $item) {
-    $row = (int) ceil(($index + 1) / 4);
+  $rows = _bibdk_subject_hierachy_get_arranged_items($hierarchy, $row_to_show);
 
-    $item['label_id'] = 'subject-hierarchy-label-link-0-' . $index;
-    $item['note_id'] = 'subject-hierarchy-note-link-0-' . $index;
-    $item['url'] = _bibdk_subject_hierarchy_get_url($index);
-    $item['note'] = _bibdk_subject_hierarchy_translate($item['note']);
+  $prepared = _bibdk_subject_hierachy_prepare_rows_for_rendering($rows, $row_to_show);
 
-    $item['wrapper_classes'] = 'themes__item item-' . $index;
-    if (!empty($row_to_show['level']) && $row_to_show['level'] == $index) {
-      $item['wrapper_classes'] .= ' themes__item--active';
-    }
-
-    $rows[$row][$index] = $item;
+  foreach($prepared as $row){
+    $rendered[] = drupal_render($row);
   }
+
+  return $rendered;
+}
+
+function _bibdk_subject_hierachy_prepare_rows_for_rendering($rows, $row_to_show){
+  $prepared = array();
 
   foreach ($rows as $key => $row) {
     $visible_row = '';
@@ -175,40 +172,31 @@ function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
       '#display' => $display,
     );
 
-    $rendered[] = _bibdk_subject_hierarchy_drupal_render($to_render);
+    $prepared[] = $to_render;
+  }
+  return $prepared;
+}
+
+function _bibdk_subject_hierachy_get_arranged_items($hierarchy, $row_to_show){
+  $rows = array();
+
+  foreach ($hierarchy as $index => $item) {
+    $row = (int) ceil(($index + 1) / 4);
+
+    $item['label_id'] = 'subject-hierarchy-label-link-0-' . $index;
+    $item['note_id'] = 'subject-hierarchy-note-link-0-' . $index;
+    $item['url'] = url('bibdk_subject_hierarchy/nojs/' . $index);
+    $item['note'] = t($item['note'], array(), array('context' => 'bibdk_subject_hierarchy'));
+
+    $item['wrapper_classes'] = 'themes__item item-' . $index;
+    if (!empty($row_to_show['level']) && $row_to_show['level'] == $index) {
+      $item['wrapper_classes'] .= ' themes__item--active';
+    }
+
+    $rows[$row][$index] = $item;
   }
 
-  return $rendered;
-}
-
-/**
- * Wrapper of the Drupal drupal_render() method to ease unittesting.
- *
- * @param array $renderarray
- * @return string
- */
-function _bibdk_subject_hierarchy_drupal_render($renderarray){
-  return drupal_render($renderarray);
-}
-
-/**
- * Wrapper of the Drupal url() method to ease unittesting.
- *
- * @param $index
- * @return string
- */
-function _bibdk_subject_hierarchy_get_url($index) {
-  return url('bibdk_subject_hierarchy/nojs/' . $index);
-}
-
-/**
- * Wrapper of the Drupal t() method to ease unittesting.
- *
- * @param $string
- * @return null|string
- */
-function _bibdk_subject_hierarchy_translate($string) {
-  return t($string, array(), array('context' => 'bibdk_subject_hierarchy'));
+  return $rows;
 }
 
 /**
