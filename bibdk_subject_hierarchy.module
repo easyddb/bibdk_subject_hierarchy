@@ -126,7 +126,7 @@ function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
   $rendered = array(
     '#theme' => 'bibdk_subject_hierarchy',
     '#rows' => $rows,
-    '#header' =>  t('HEADER_BIBDK_SUBJECT_HIERARCHY', array(), array('context' => 'bibdk_subject_hierarchy')),
+    '#header' => t('HEADER_BIBDK_SUBJECT_HIERARCHY', array(), array('context' => 'bibdk_subject_hierarchy')),
   );
 
   return $rendered;
@@ -145,14 +145,14 @@ function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
 
   $prepared = _bibdk_subject_hierachy_prepare_rows_for_rendering($rows, $row_to_show);
 
-  foreach($prepared as $row){
+  foreach ($prepared as $row) {
     $rendered[] = drupal_render($row);
   }
 
   return $rendered;
 }
 
-function _bibdk_subject_hierachy_prepare_rows_for_rendering($rows, $row_to_show){
+function _bibdk_subject_hierachy_prepare_rows_for_rendering($rows, $row_to_show) {
   $prepared = array();
 
   foreach ($rows as $key => $row) {
@@ -174,10 +174,11 @@ function _bibdk_subject_hierachy_prepare_rows_for_rendering($rows, $row_to_show)
 
     $prepared[] = $to_render;
   }
+
   return $prepared;
 }
 
-function _bibdk_subject_hierachy_get_arranged_items($hierarchy, $row_to_show){
+function _bibdk_subject_hierachy_get_arranged_items($hierarchy, $row_to_show) {
   $rows = array();
 
   foreach ($hierarchy as $index => $item) {
