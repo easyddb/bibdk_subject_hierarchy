@@ -102,11 +102,10 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
     ),
     'bibdk_subject_hierarchy_row' => array(
       'variables' => array(
-        'key' => 0,
+        'row' => 0,
         'items' => array(),
         'visible_row' => '',
         'display' => 'none',
-        'baseurl' => '',
       ),
       'path' => $path,
       'template' => 'bibdk-subject-hierarchy-row',
@@ -124,10 +123,11 @@ function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
 
   $rows = _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show);
 
-  $rendered = theme('bibdk_subject_hierarchy', array(
-    'rows' => $rows,
-    'header' => 'HEADER_BIBDK_SUBJECT_HIERARCHY',
-  ));
+  $rendered = array(
+    '#theme' => 'bibdk_subject_hierarchy',
+    '#rows' => $rows,
+    '#header' => _bibdk_subject_hierarchy_translate('HEADER_BIBDK_SUBJECT_HIERARCHY'),
+  );
 
   return $rendered;
 
@@ -140,14 +140,15 @@ function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
  */
 function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
   $rows = array();
+  $rendered = array();
 
   foreach ($hierarchy as $index => $item) {
     $row = (int) ceil(($index + 1) / 4);
 
     $item['label_id'] = 'subject-hierarchy-label-link-0-' . $index;
     $item['note_id'] = 'subject-hierarchy-note-link-0-' . $index;
-    $item['url'] = url('bibdk_subject_hierarchy/nojs/' . $index);
-    $item['note'] = t($item['note'], array(), array('context' => 'bibdk_subject_hierarchy'));
+    $item['url'] = _bibdk_subject_hierarchy_get_url($index);
+    $item['note'] = _bibdk_subject_hierarchy_translate($item['note']);
 
     $item['wrapper_classes'] = 'themes__item item-' . $index;
     if (!empty($row_to_show['level']) && $row_to_show['level'] == $index) {
@@ -166,15 +167,48 @@ function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
       $display = 'block';
     }
 
-    $rendered[] = theme('bibdk_subject_hierarchy_row', array(
-      'row' => $key,
-      'items' => $row,
-      'visible_row' => $visible_row,
-      'display' => $display,
-    ));
+    $to_render = array(
+      '#theme' => 'bibdk_subject_hierarchy_row',
+      '#row' => $key,
+      '#items' => $row,
+      '#visible_row' => $visible_row,
+      '#display' => $display,
+    );
+
+    $rendered[] = _bibdk_subject_hierarchy_drupal_render($to_render);
   }
 
   return $rendered;
+}
+
+/**
+ * Wrapper of the Drupal drupal_render() method to ease unittesting.
+ *
+ * @param array $renderarray
+ * @return string
+ */
+function _bibdk_subject_hierarchy_drupal_render($renderarray){
+  return drupal_render($renderarray);
+}
+
+/**
+ * Wrapper of the Drupal url() method to ease unittesting.
+ *
+ * @param $index
+ * @return string
+ */
+function _bibdk_subject_hierarchy_get_url($index) {
+  return url('bibdk_subject_hierarchy/nojs/' . $index);
+}
+
+/**
+ * Wrapper of the Drupal t() method to ease unittesting.
+ *
+ * @param $string
+ * @return null|string
+ */
+function _bibdk_subject_hierarchy_translate($string) {
+  return t($string, array(), array('context' => 'bibdk_subject_hierarchy'));
 }
 
 /**
