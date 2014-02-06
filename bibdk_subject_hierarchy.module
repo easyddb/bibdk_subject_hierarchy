@@ -66,6 +66,8 @@ function bibdk_subject_hierarchy_block_view($delta = '') {
       $block['title'] = '<none>';
       $block['subject'] = t('Bibliotek.dk subject hierarchy', array());
       $block['content'] = bibdk_subject_hierarchy_get_block_content();
+      $block['visibilty'] = BLOCK_VISIBILITY_LISTED;
+      $block['pages'] = '<front>';
       break;
   }
 
@@ -102,8 +104,9 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
       'variables' => array(
         'key' => 0,
         'items' => array(),
-        'visible' => '',
+        'visible_row' => '',
         'display' => 'none',
+        'baseurl' => '',
       ),
       'path' => $path,
       'template' => 'bibdk-subject-hierarchy-row',
@@ -122,11 +125,8 @@ function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
   $rows = _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show);
 
   $rendered = theme('bibdk_subject_hierarchy', array(
-    'hierarchy' => $hierarchy,
     'rows' => $rows,
-    'path' => _bibdk_subject_hierarchy_search_info(),
     'header' => 'HEADER_BIBDK_SUBJECT_HIERARCHY',
-    'row_to_show' => $row_to_show,
   ));
 
   return $rendered;
@@ -139,27 +139,30 @@ function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
  * @return array
  */
 function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
-  dsm(__FUNCTION__);
   $rows = array();
 
   foreach ($hierarchy as $index => $item) {
-    $row = (int) floor($index / 4);
+    $row = ceil(($index + 1) / 4);
+    $item['index'] = $index;
     $rows[$row][] = $item;
   }
+  $baseurl = url('bibdk_subject_hierarchy/nojs');
 
   foreach ($rows as $key => $row) {
-    $visible = '';
+    $visible_row = '';
     $display = 'none';
+
     if (!empty($row_to_show['row']) && $row_to_show['row'] == $key) {
-      $visible = $row_to_show['rendered'];
+      $visible_row = $row_to_show['rendered'];
       $display = 'block';
     }
 
     $rendered[] = theme('bibdk_subject_hierarchy_row', array(
-      'key' => $key,
+      'row' => $key,
       'items' => $row,
-      'visible' => $visible,
-      'display' => $display
+      'visible_row' => $visible_row,
+      'display' => $display,
+      'baseurl' => $baseurl,
     ));
   }
 
@@ -170,9 +173,6 @@ function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
  * AJAX callback
  */
 function bibdk_subject_hierarchy_ajax_callback($key) {
-  #fb('ajax');
-  #fb($key);
-
   $emnehierarki = _get_bibdk_subject_hierarchy();
 
   $emnehierarki_item = _get_bibdk_subject_hierarchy_item($emnehierarki, $key);
@@ -186,8 +186,6 @@ function bibdk_subject_hierarchy_ajax_callback($key) {
   $ajax_commands[] = ajax_command_invoke('.themes__item', 'removeClass', array('themes__item--active'));
   $ajax_commands[] = ajax_command_invoke('.themes__item.item-' . $level, 'addClass', array('themes__item--active'));
 
-  // Return our commands in JSON.
-  #fb($ajax_commands);
   return drupal_json_output($ajax_commands);
 }
 
@@ -195,8 +193,6 @@ function bibdk_subject_hierarchy_ajax_callback($key) {
  * Non-JavaScript callback.
  */
 function bibdk_subject_hierarchy_nojs_callback($key) {
-  fb('no ajax');
-
   $emnehierarki = _get_bibdk_subject_hierarchy();
 
   $items = _get_bibdk_subject_hierarchy_item($emnehierarki, $key);

@@ -3,8 +3,6 @@
  * @file
  * Theme implementation for bibdk_subject_hierarchy_item.
  */
-dsm(__FILE__);
-dpm($variables);
 ?>
 
 <div class="themes__sublists">

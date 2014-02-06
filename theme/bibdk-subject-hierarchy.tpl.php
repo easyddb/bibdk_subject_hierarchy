@@ -4,7 +4,6 @@
  * @file
  * Theme implementation for bibdk_subject_hierarchy.
  */
-#dpm($variables);
 ?>
 
 <div id="bibdk-subject-hierarchy" class="themes clearfix">
