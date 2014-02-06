@@ -142,11 +142,20 @@ function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
   $rows = array();
 
   foreach ($hierarchy as $index => $item) {
-    $row = ceil(($index + 1) / 4);
-    $item['index'] = $index;
-    $rows[$row][] = $item;
+    $row = (int) ceil(($index + 1) / 4);
+
+    $item['label_id'] = 'subject-hierarchy-label-link-0-' . $index;
+    $item['note_id'] = 'subject-hierarchy-note-link-0-' . $index;
+    $item['url'] = url('bibdk_subject_hierarchy/nojs/' . $index);
+    $item['note'] = t($item['note'], array(), array('context' => 'bibdk_subject_hierarchy'));
+
+    $item['wrapper_classes'] = 'themes__item item-' . $index;
+    if (!empty($row_to_show['level']) && $row_to_show['level'] == $index) {
+      $item['wrapper_classes'] .= ' themes__item--active';
+    }
+
+    $rows[$row][$index] = $item;
   }
-  $baseurl = url('bibdk_subject_hierarchy/nojs');
 
   foreach ($rows as $key => $row) {
     $visible_row = '';
@@ -162,7 +171,6 @@ function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
       'items' => $row,
       'visible_row' => $visible_row,
       'display' => $display,
-      'baseurl' => $baseurl,
     ));
   }
 
@@ -198,6 +206,7 @@ function bibdk_subject_hierarchy_nojs_callback($key) {
   $items = _get_bibdk_subject_hierarchy_item($emnehierarki, $key);
   $row_to_show['rendered'] = drupal_render($items);
   $row_to_show['row'] = $items['row'];
+  $row_to_show['level'] = $items['level'];
 
   return bibdk_subject_hierarchy_get_block_content($row_to_show);
 }
@@ -216,7 +225,7 @@ function _get_bibdk_subject_hierarchy_item($emnehierarki, $key) {
 
   $level = array_shift($key_arr);
 
-  $row = ceil(($level + 1) / 4);
+  $row = (int) ceil(($level + 1) / 4);
 
   $emnehierarki = $emnehierarki[$level];
 
