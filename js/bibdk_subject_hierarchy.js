@@ -1,7 +1,6 @@
 (function ($) {
     Drupal.behaviors.subject_hierarchy_action = {
         attach: function (context) {
-          console.log('attach');
             $('.themes__close-button', context).click(function (e) {
                 e.preventDefault();
                 $('.themes__item').removeClass('themes__item--active');
