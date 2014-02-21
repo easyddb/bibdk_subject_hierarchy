@@ -1,7 +1,5 @@
 <?php
 
-
-
 class BibdkSubjectHierarchyWebTestCase extends DrupalWebTestCase {
 
   protected $privileged_user;
@@ -24,7 +22,6 @@ class BibdkSubjectHierarchyWebTestCase extends DrupalWebTestCase {
     menu_rebuild();
   }
 
-
   public function testRunner() {
 
     // Create and log in our privileged user.
@@ -34,6 +31,7 @@ class BibdkSubjectHierarchyWebTestCase extends DrupalWebTestCase {
     ));
     $this->drupalLogin($this->privileged_user);
     $this->_testBibdkSubjectHierarchy();
+
     return TRUE;
 
   }
@@ -43,6 +41,5 @@ class BibdkSubjectHierarchyWebTestCase extends DrupalWebTestCase {
     $this->drupalGet('');
     $this->assertFieldByName('search_block_form');
   }
-
 
 }

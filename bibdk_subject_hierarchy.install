@@ -5,14 +5,12 @@
  * Install, update, and uninstall functions for the subject hierarchy module.
  */
 
-
 /**
  * Implements hook_enable().
  */
 function bibdk_subject_hierarchy_enable() {
   _get_bibdk_subject_hierarchy();
 }
-
 
 /**
  * Implements hook_install().
@@ -21,14 +19,12 @@ function bibdk_subject_hierarchy_install() {
   _add_bibdk_subject_hierarchy_block();
 }
 
-
 /**
  * Implements hook_uninstall().
  */
 function bibdk_subject_hierarchy_uninstall() {
   variable_set('subject_hierarchy', NULL);
 }
-
 
 /**
  * Insert subject hierarchy block in region.
@@ -47,13 +43,22 @@ function _add_bibdk_subject_hierarchy_block() {
       'title' => '<none>',
     ),
   );
-  $query = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache', 'title'));
+  $query = db_insert('block')->fields(array(
+    'module',
+    'delta',
+    'theme',
+    'status',
+    'weight',
+    'region',
+    'pages',
+    'cache',
+    'title'
+  ));
   foreach ($values as $record) {
     $query->values($record);
   }
   $query->execute();
 }
-
 
 /**
  * Implements hook_update_N
