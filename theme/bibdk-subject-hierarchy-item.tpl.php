@@ -21,7 +21,7 @@
         }
         else {
           $url = 'bibdk_subject_hierarchy/nojs/' . $variables['current_key'] . ',' . $key;
-          $attributes['attributes']['class'] = array('use-ajax');
+          $attributes['attributes']['class'] = array('use-ajax', 'nesting');
         }
         echo '<li>' . l($item['ord'], $url, $attributes) . "</li>\n";
       } ?>
