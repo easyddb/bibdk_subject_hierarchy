@@ -283,7 +283,6 @@ function _get_bibdk_subject_hierarchy() {
     $emnehierarki = _bibdk_subject_hierarchy_read_data();
     variable_set('subject_hierarchy', $emnehierarki);
   }
-  //debug($emnehierarki);
 
   return $emnehierarki;
 }
@@ -307,6 +306,9 @@ function _get_bibdk_subject_hierarchy_level($emnehierarki, $key) {
   $level = array_shift($key);
   if (isset($emnehierarki['term']) && isset($emnehierarki['term'][$level])) {
     $emnehierarki = $emnehierarki['term'][$level];
+  }
+  else {
+    return null;
   }
   if (sizeof($key) > 0) {
     $emnehierarki = _get_bibdk_subject_hierarchy_level($emnehierarki, $key);
