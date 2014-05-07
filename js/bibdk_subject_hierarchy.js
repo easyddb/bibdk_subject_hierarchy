@@ -6,12 +6,18 @@
                 $('.themes__item').removeClass('themes__item--active');
                 $('.themes__sublists__wrapper').fadeOut('200');
             });
-            $('#bibdk-subject-hierachy-searchfield-form', context).ajaxComplete(function(event, xhr, settings) {
-                if(event.target.id == 'bibdk-subject-hierachy-searchfield-form'){
-                    console.log(xhr);
-                }
-
-            });
         }
     };
+    Drupal.ajax.prototype.commands.afterAjaxSubmit = function(ajax, response, status) {
+        $(response.selector).replaceWith(response.value);
+        $('#bibdk-subject-hierarchy-content').hide();
+        $(response.selector).hide();
+        $(response.selector).fadeIn('200');
+        $('.close', response.selector).click(function (event) {
+            event.preventDefault();
+            $(response.selector).hide();
+            $('#bibdk-subject-hierarchy-content').fadeIn('200');
+        });
+    }
+
 }(jQuery));

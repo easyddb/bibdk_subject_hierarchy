@@ -1,35 +1,28 @@
 <?php
 
-/**
+/** Get searchresult from subject hierarchy (WEBTEST)
+ *
  * @param $hierachy
  * @param $term
  * @return array
- * TODO: break it down
  */
 function _get_bibdk_subject_hierarchy_searchresult($term) {
   $hierarchy = _get_bibdk_subject_hierarchy();
-  $indexes = _get_bibdk_subject_hierarchy_searchresult_index($hierarchy, $term);
   $path = _bibdk_subject_hierarchy_search_info();
+  $result = array(
+    'number_of_groups' => 0,
+    'number_of_results' => 0,
+    'result' => array(),
+  );
+  $indexes = _get_bibdk_subject_hierarchy_searchresult_index($hierarchy, $term);
 
-  $result = array();
-
-  // create groups
-  // todo: move to search index function
-  $groups = array();
-  foreach ($indexes as $index) {
-    $arr = explode(',', $index);
-    $element_id = array_pop($arr);
-    $group_id = implode(',', $arr);
-    $groups[$group_id][$element_id] = $index;
-  }
-  $result['number_of_groups'] = count($groups);
-  $result['number_of_results'] = count($indexes);
-
-  foreach ($groups as $id => $group) {
-    $arr = explode(',', $id);
+  foreach ($indexes as $group_index => $group_elements) {
+    $result['number_of_groups']++;
+    $arr = explode(',', $group_index);
     $breadcrumb = _get_bibdk_subject_hierarchy_breadcrumbs($hierarchy, $arr, $path);
     $items = array();
-    foreach ($group as $element_id => $element) {
+    foreach ($group_elements as $element) {
+      $result['number_of_results']++;
       $items[] = drupal_render(_get_bibdk_subject_hierarchy_searchresult_item($hierarchy, $element, $path));
     }
 
@@ -52,26 +45,65 @@ function _get_bibdk_subject_hierarchy_searchresult($term) {
   return $result;
 }
 
-function _get_bibdk_subject_hierarchy_searchresult_index($hierachy, $term, $currentkey = array(), &$results = array()) {
+/** Get indexes of searchresults (UNITTEST)
+ *
+ * Traverses the subjecthierarcky and returns the indexes where the item contains the searchterm $searchterm
+ *
+ * @param $hierachy
+ * @param $searchterm
+ * @param array $hierarchy_level_index Records which level in the hierarchy we are traversing
+ * @param array $results Keeps the current result indexes
+ * @return array
+ */
+function _get_bibdk_subject_hierarchy_searchresult_index($hierachy, $searchterm, $hierarchy_level_index = array(), &$results = array()) {
+
   foreach ($hierachy as $key => $item) {
-    $current = $currentkey;
-    $current[] = $key;
-    if (strripos($item['ord'], $term) !== false) {
-      $results[] = implode(',', $current);
+    // set level_index of current  item
+    $current_level_index = $hierarchy_level_index;
+    $current_level_index[] = $key;
+
+    // if item contains $searchterm
+    if (isset($item['ord']) && strripos($item['ord'], $searchterm) !== false) {
+      $hierarchy_level_index_string = implode(',', $hierarchy_level_index);
+      $current_level_index_string = implode(',', $current_level_index);
+      $results[$hierarchy_level_index_string][] = $current_level_index_string;
     }
+    // hierarchy contains more levels
     if (isset($item['term'])) {
-      _get_bibdk_subject_hierarchy_searchresult_index($item['term'], $term, $current, $results);
+      _get_bibdk_subject_hierarchy_searchresult_index($item['term'], $searchterm, $current_level_index, $results);
     }
   }
-
   return $results;
 }
 
+/** Returns an item in the subject hierarchy given an index (UNITTEST)
+ * @param $emnehierarki
+ * @param $key
+ * @param $path
+ * @return array
+ */
 function _get_bibdk_subject_hierarchy_searchresult_item($emnehierarki, $key, $path) {
 
   $key_arr = explode(',', $key);
-  $level = array_shift($key_arr);
-  $item = _get_bibdk_subject_hierarchy_level($emnehierarki[$level], $key_arr);
+  $level_index = array_shift($key_arr);
+  $link = array();
+
+  if (isset($emnehierarki[$level_index])){
+    $item = _get_bibdk_subject_hierarchy_level($emnehierarki[$level_index], $key_arr);
+    $link = _get_bibdk_subject_hierarchy_searchresult_item_link($item, $key, $path);
+  }
+  return $link;
+}
+
+/** Get link to subject hierarchy searchresult item (INDIRECT UNITTEST/PRIVATE)
+ * @param $item
+ * @param $key
+ * @param $path
+ * @return array
+ */
+function _get_bibdk_subject_hierarchy_searchresult_item_link($item, $key, $path) {
+  if (empty($item))
+    return array();
 
   if (!empty($item['cql']) && empty($item['term'])) {
     $url = 'search/' . $path . '/' . trim($item['cql']);
@@ -93,6 +125,7 @@ function _get_bibdk_subject_hierarchy_searchresult_item($emnehierarki, $key, $pa
     ),
   );
   return $link;
+
 }
 
 
@@ -101,14 +134,15 @@ function _get_bibdk_subject_hierarchy_searchresult_item($emnehierarki, $key, $pa
  */
 function bibdk_subject_hierachy_searchfield_form($form, &$form_state) {
   $form = array();
-  $form['input'] = array(
+  $form['search-hierarchy-input'] = array(
     '#type' => 'textfield',
     '#attributes' => array(
       'class' => array('searchfield-input'),
       'placeholder' => t('search in subject hierachy'),
     ),
   );
-  $form['submit'] = array(
+
+  $form['search-hierarchy-submit'] = array(
     '#type' => 'submit',
     '#value' => t('search'),
     '#attributes' =>array(
@@ -116,7 +150,7 @@ function bibdk_subject_hierachy_searchfield_form($form, &$form_state) {
     ),
     '#ajax' => array(
       'callback' => 'bibdk_subject_hierachy_searchfield_form_submit',
-      'wrapper' => 'bibdk-subject-hierarchy-content',
+      'wrapper' => 'bibdk-subject-hierarchy-searchresult',
       'method' => 'replace',
       'effect' => 'fade',
       'event' => 'click',
@@ -125,15 +159,15 @@ function bibdk_subject_hierachy_searchfield_form($form, &$form_state) {
   return $form;
 }
 
-/** Create subject hierachy search form
+/** Subject hierachy search form submit method
+ *
  *  * @return array
  */
 function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
 
-  $search_term = $form_state['values']['input'];
+  $search_term = $form_state['values']['search-hierarchy-input'];
 
   $searchresult = _get_bibdk_subject_hierarchy_searchresult($search_term);
-
 
   $result_text = t('You got !number_of_results results in !number_of_groups groups', array(
     '!number_of_results' => $searchresult['number_of_results'],
@@ -150,14 +184,13 @@ function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
   $header['close'] = array(
     '#theme' => 'link',
     '#path' => '',
-    '#text' => 'close',
+    '#text' => '&nbsp;',
     '#options' => array(
       'attributes' => array(
-        'class' => array(),
+        'class' => array('themes__close-button close icon icon-blue-x'),
       ),
       'html' => true,
     ),
-
   );
 
   $header['headline'] = array(
@@ -174,17 +207,27 @@ function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
   $return['bibdk-subject-hierarchy-searchresults'] = array(
     '#type' => 'container',
     '#attributes' => array(
-      'id' => array('bibdk-subject-hierarchy-content'),
+      'id' => array('bibdk-subject-hierarchy-searchresult'),
       'class' => array('bibdk-subject-hierarchy-searchresult', 'themes__sublists'),
     ),
     'header' => $header,
     'result' => $searchresult['result'],
   );
 
-  return $return;
+  $commands[] = array(
+    'command' => 'afterAjaxSubmit',
+    'value' => drupal_render($return),
+    'selector' => '#bibdk-subject-hierarchy-searchresult'
+  );
+
+  return array('#type' => 'ajax', '#commands' => $commands);
 
 }
 
+/** Get searchresult on term
+ * TODO: integrate
+ * @param $term
+ */
 function bibdk_subject_hierachy_searchfield_custom_search($term) {
   $params['agency'] = variable_get('ting_agency');
   $params['profile'] = variable_get('ting_search_profile', FALSE);
@@ -200,4 +243,3 @@ function bibdk_subject_hierachy_searchfield_custom_search($term) {
 
 
 }
-
