@@ -22,6 +22,7 @@
       <?php print $row; ?>
     <?php endforeach; ?>
     </div>
-  </div>
+    <div id="bibdk-subject-hierarchy-searchresult">
+    </div>
+    </div>
 </div>
-
