@@ -1,6 +1,6 @@
 <?php
 
-/** Get searchresult from subject hierarchy (WEBTEST)
+/** Get searchresult from subject hierarchy
  *
  * @param $hierachy
  * @param $term
@@ -45,7 +45,7 @@ function _get_bibdk_subject_hierarchy_searchresult($term) {
   return $result;
 }
 
-/** Get indexes of searchresults (UNITTEST)
+/** Get indexes of searchresults
  *
  * Traverses the subjecthierarcky and returns the indexes where the item contains the searchterm $searchterm
  *
@@ -76,7 +76,8 @@ function _get_bibdk_subject_hierarchy_searchresult_index($hierachy, $searchterm,
   return $results;
 }
 
-/** Returns an item in the subject hierarchy given an index (UNITTEST)
+/** Returns an item in the subject hierarchy given an index
+ *
  * @param $emnehierarki
  * @param $key
  * @param $path
@@ -88,22 +89,24 @@ function _get_bibdk_subject_hierarchy_searchresult_item($emnehierarki, $key, $pa
   $level_index = array_shift($key_arr);
   $link = array();
 
-  if (isset($emnehierarki[$level_index])){
+  if (isset($emnehierarki[$level_index])) {
     $item = _get_bibdk_subject_hierarchy_level($emnehierarki[$level_index], $key_arr);
     $link = _get_bibdk_subject_hierarchy_searchresult_item_link($item, $key, $path);
   }
   return $link;
 }
 
-/** Get link to subject hierarchy searchresult item (INDIRECT UNITTEST/PRIVATE)
+/** Get link to subject hierarchy searchresult item
+ *
  * @param $item
  * @param $key
  * @param $path
  * @return array
  */
 function _get_bibdk_subject_hierarchy_searchresult_item_link($item, $key, $path) {
-  if (empty($item))
+  if (empty($item)) {
     return array();
+  }
 
   if (!empty($item['cql']) && empty($item['term'])) {
     $url = 'search/' . $path . '/' . trim($item['cql']);
@@ -145,7 +148,7 @@ function bibdk_subject_hierachy_searchfield_form($form, &$form_state) {
   $form['search-hierarchy-submit'] = array(
     '#type' => 'submit',
     '#value' => t('search'),
-    '#attributes' =>array(
+    '#attributes' => array(
       'class' => array('searchfield-submit'),
     ),
     '#ajax' => array(
@@ -168,6 +171,7 @@ function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
   $search_term = $form_state['values']['search-hierarchy-input'];
 
   $searchresult = _get_bibdk_subject_hierarchy_searchresult($search_term);
+  $search_in_well = bibdk_subject_hierachy_searchfield_custom_search($search_term);
 
   $result_text = t('You got !number_of_results results in !number_of_groups groups', array(
     '!number_of_results' => $searchresult['number_of_results'],
@@ -212,6 +216,7 @@ function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
     ),
     'header' => $header,
     'result' => $searchresult['result'],
+    'well_result' => $search_in_well,
   );
 
   $commands[] = array(
@@ -226,6 +231,7 @@ function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
 
 /** Get searchresult on term
  * TODO: integrate
+ *
  * @param $term
  */
 function bibdk_subject_hierachy_searchfield_custom_search($term) {
@@ -239,7 +245,17 @@ function bibdk_subject_hierachy_searchfield_custom_search($term) {
   $client = new ting_client_class();
   $opensearch_result = $client->do_request('search', $params);
 
+  $return['result']['#markup'] = t('A search on %term gives %results results', array('%term' => $term, '%results' => $opensearch_result->numTotalObjects)) . ' ';
+  $return['link'] = array(
+    '#theme' => 'link',
+    '#path' => 'search/work/' . $term,
+    '#text' => t('Show result'),
+    '#options' => array(
+      'attributes' => array(),
+      'html' => false,
+    ),
+  );
 
-
+  return $return;
 
 }
