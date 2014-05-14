@@ -4,6 +4,9 @@
  * Bibliotek.dk subject hierarchy module main file.
  */
 
+// includes search functionality
+include_once('bibdk_subject_hierachy.search.inc');
+
 /**
  * Implements hook_menu().
  */
@@ -86,6 +89,7 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
         'hierarchy' => array(),
         'rows' => array(),
         'header' => '',
+        'searchfield' => '',
       ),
       'path' => $path,
       'template' => 'bibdk-subject-hierarchy',
@@ -127,6 +131,7 @@ function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
     '#theme' => 'bibdk_subject_hierarchy',
     '#rows' => $rows,
     '#header' => t('HEADER_BIBDK_SUBJECT_HIERARCHY', array(), array('context' => 'bibdk_subject_hierarchy')),
+    '#searchfield' => drupal_get_form('bibdk_subject_hierachy_searchfield_form'),
   );
 
   return $rendered;
@@ -216,6 +221,7 @@ function bibdk_subject_hierarchy_ajax_callback($key) {
   $ajax_commands[] = ajax_command_invoke('.themes__sublists__wrapper.row-' . $row, 'fadeIn', array('200'));
   $ajax_commands[] = ajax_command_invoke('.themes__item', 'removeClass', array('themes__item--active'));
   $ajax_commands[] = ajax_command_invoke('.themes__item.item-' . $level, 'addClass', array('themes__item--active'));
+  $ajax_commands[] = ajax_command_invoke('#bibdk-subject-hierarchy-searchresult .close', 'click');
 
   return drupal_json_output($ajax_commands);
 }
@@ -256,7 +262,7 @@ function _get_bibdk_subject_hierarchy_item($emnehierarki, $key) {
     $emnehierarki = _get_bibdk_subject_hierarchy_level($emnehierarki, $key_arr);
   }
 
-  drupal_set_title($breadcrumbs[count($breadcrumbs) - 1]['ord']);
+  drupal_set_title($breadcrumbs[count($breadcrumbs) - 1]['#text']);
 
   return array(
     '#theme' => 'bibdk_subject_hierarchy_item',
@@ -302,6 +308,9 @@ function _get_bibdk_subject_hierarchy_level($emnehierarki, $key) {
   if (isset($emnehierarki['term']) && isset($emnehierarki['term'][$level])) {
     $emnehierarki = $emnehierarki['term'][$level];
   }
+  else {
+    return null;
+  }
   if (sizeof($key) > 0) {
     $emnehierarki = _get_bibdk_subject_hierarchy_level($emnehierarki, $key);
   }
@@ -313,19 +322,16 @@ function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key, $path = '
 
   $level = array_shift($key);
 
-  foreach ($breadcrumbs as $n => $breadcrumb) {
-    $breadcrumbs[$n]['url'] = 'bibdk_subject_hierarchy/nojs/' . $breadcrumbs[$n]['keys_path'];
-    $breadcrumbs[$n]['attributes'] = array('attributes' => array('class' => array('use-ajax')));
-    $keys_path[] = $breadcrumb['key'];
-  }
-  $keys_path[] = $level;
-
   $breadcrumbs[] = array(
-    'ord' => $emnehierarki[$level]['ord'],
-    'url' => (!empty($emnehierarki[$level]['cql'])) ? 'search/' . $path . '/' . $emnehierarki[$level]['cql'] : 'bibdk_subject_hierarchy/nojs/' . implode(',', $keys_path),
-    'key' => $level,
-    'keys_path' => implode(',', $keys_path),
-    'attributes' => (!empty($emnehierarki[$level]['cql'])) ? array('attributes' => array('class' => array('last'))) : array('attributes' => array('class' => array('use-ajax'))),
+    '#theme' => 'link',
+    '#text' => $emnehierarki[$level]['ord'],
+    '#path' => (!empty($emnehierarki[$level]['cql'])) ? 'search/' . $path . '/' . $emnehierarki[$level]['cql'] : 'bibdk_subject_hierarchy/nojs/' . implode(',', $key),
+    '#options' => array(
+      'attributes' => (!empty($emnehierarki[$level]['cql'])) ? array('class' => array('last')) : array('class' => array('use-ajax')),
+      'html' => FALSE,
+    ),
+    '#key' => $level,
+    '#keys_path' => implode(',', $key),
   );
 
   if (sizeof($key) > 0 && isset($emnehierarki[$level]['term']) && isset($emnehierarki[$level]['term'])) {
