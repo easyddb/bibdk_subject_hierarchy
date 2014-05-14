@@ -37,6 +37,9 @@ function _get_bibdk_subject_hierarchy_searchresult($term) {
       'elements' => array(
         '#theme' => 'item_list',
         '#items' => $items,
+        '#attributes' => array(
+          'class' => 'themes__sublist',
+        ),
       )
     );
 
@@ -230,7 +233,6 @@ function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
 }
 
 /** Get searchresult on term
- * TODO: integrate
  *
  * @param $term
  */

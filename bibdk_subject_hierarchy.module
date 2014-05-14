@@ -221,6 +221,7 @@ function bibdk_subject_hierarchy_ajax_callback($key) {
   $ajax_commands[] = ajax_command_invoke('.themes__sublists__wrapper.row-' . $row, 'fadeIn', array('200'));
   $ajax_commands[] = ajax_command_invoke('.themes__item', 'removeClass', array('themes__item--active'));
   $ajax_commands[] = ajax_command_invoke('.themes__item.item-' . $level, 'addClass', array('themes__item--active'));
+  $ajax_commands[] = ajax_command_invoke('#bibdk-subject-hierarchy-searchresult .close', 'click');
 
   return drupal_json_output($ajax_commands);
 }
