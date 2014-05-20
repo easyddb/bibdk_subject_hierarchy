@@ -8,4 +8,16 @@
             });
         }
     };
+    Drupal.ajax.prototype.commands.afterAjaxSubmit = function(ajax, response, status) {
+        $(response.selector).replaceWith(response.value);
+        $('#bibdk-subject-hierarchy-content').hide();
+        $(response.selector).hide();
+        $(response.selector).fadeIn('200');
+        $('.close', response.selector).click(function (event) {
+            event.preventDefault();
+            $(response.selector).hide();
+            $('#bibdk-subject-hierarchy-content').fadeIn('200');
+        });
+    }
+
 }(jQuery));

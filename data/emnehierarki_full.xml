@@ -1524,7 +1524,7 @@ em=børn</ccl>
       </term>
       <term>
         <ord>Omskæring</ord>
-        <ccl>em=omskæring ikke cl=sk</ccl>
+        <ccl>em=omskæring ikke dkcclterm.cl=sk</ccl>
         <kommentar></kommentar>
         <hjaelpetekst></hjaelpetekst>
         <infotekst></infotekst>
@@ -16367,7 +16367,7 @@ Følger søgestrengen i &#34;Samfund, økonomi og politik&#34;</kommentar>
         </term>
         <term>
           <ord>Orkaner</ord>
-          <ccl>em=orkaner ikke cl=sk</ccl>
+          <ccl>em=orkaner ikke dkcclterm.cl=sk</ccl>
           <kommentar></kommentar>
           <hjaelpetekst></hjaelpetekst>
           <infotekst></infotekst>
@@ -16439,7 +16439,7 @@ Følger søgestrengen i &#34;Samfund, økonomi og politik&#34;</kommentar>
         </term>
         <term>
           <ord>Kloning</ord>
-          <ccl>em=kloning ikke cl=sk</ccl>
+          <ccl>em=kloning ikke dkcclterm.cl=sk</ccl>
           <kommentar></kommentar>
           <hjaelpetekst></hjaelpetekst>
           <infotekst></infotekst>
@@ -17396,7 +17396,7 @@ OBS!!!! - lokalt skal sidste del af ccl'en ændres/fjernes</kommentar>
       </term>
       <term>
         <ord>Trafikulykker</ord>
-        <ccl>em=trafikuheld eller em=trafikulykker ikke cl=sk</ccl>
+        <ccl>em=trafikuheld eller em=trafikulykker ikke dkcclterm.cl=sk</ccl>
         <kommentar></kommentar>
         <hjaelpetekst></hjaelpetekst>
         <infotekst></infotekst>

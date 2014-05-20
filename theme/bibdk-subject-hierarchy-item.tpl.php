@@ -8,9 +8,7 @@
 <div class="themes__sublists">
   <div class="themes__close-button icon icon-blue-x">&nbsp;</div>
   <div class="themes__breadcrumb">
-    <?php foreach ($variables['breadcrumbs'] as $breadcrumb) {
-      echo l($breadcrumb['ord'], $breadcrumb['url'], $breadcrumb['attributes']);
-    } ?>
+    <?php echo drupal_render($breadcrumbs); ?>
   </div>
   <div class="themes__sublist">
     <ul>
