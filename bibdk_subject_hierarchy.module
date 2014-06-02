@@ -390,6 +390,7 @@ function _bibdk_subject_hierarchy_parse_term($term) {
   $record = array();
 
   $replaceFromShortterm = array(
+    'cl=',
     'ds=',
     'db=',
     'df=',
@@ -423,6 +424,7 @@ function _bibdk_subject_hierarchy_parse_term($term) {
   );
 
   $replaceToShortterm = array(
+    'dkcclterm.cl=',
     'dkcclterm.ds=',
     'dkcclterm.db=',
     'dkcclterm.df=',
@@ -481,9 +483,9 @@ function _bibdk_subject_hierarchy_parse_term($term) {
 }
 
 /** Normalize a string so that it can be compared with others without being too fussy.
- *   e.g. "�dr���l�n�" would return "adrenaline"
+ *   e.g. "?dr???l?n?" would return "adrenaline"
  *   Note: Some letters are converted into more than one letter,
- *   e.g. "�" becomes "sz", or "�" becomes "ae"
+ *   e.g. "?" becomes "sz", or "?" becomes "ae"
  */
 function normalize_string($string) {
   // remove whitespace, leaving only a single underscore between words.
