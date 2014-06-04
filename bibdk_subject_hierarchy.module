@@ -90,6 +90,7 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
         'rows' => array(),
         'header' => '',
         'searchfield' => '',
+        'helptext' => '',
       ),
       'path' => $path,
       'template' => 'bibdk-subject-hierarchy',
@@ -132,6 +133,7 @@ function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
     '#rows' => $rows,
     '#header' => t('HEADER_BIBDK_SUBJECT_HIERARCHY', array(), array('context' => 'bibdk_subject_hierarchy')),
     '#searchfield' => drupal_get_form('bibdk_subject_hierachy_searchfield_form'),
+    '#helptext' => t('SUBJECT_HIERARCHY_HELPTEXT', array(), array('context' => 'bibdk_subject_hierarchy')),
   );
 
   return $rendered;
