@@ -7,6 +7,9 @@
 // includes search functionality
 include_once('bibdk_subject_hierachy.search.inc');
 
+// includes suggestion functionality
+include_once('bibdk_subject_hierachy.suggestion.inc');
+
 /**
  * Implements hook_menu().
  */

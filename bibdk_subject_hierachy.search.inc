@@ -220,6 +220,7 @@ function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
     'header' => $header,
     'result' => $searchresult['result'],
     'well_result' => $search_in_well,
+    'suggestionform' => drupal_get_form('bibdk_subject_hierachy_suggestion_form'),
   );
 
   $commands[] = array(
