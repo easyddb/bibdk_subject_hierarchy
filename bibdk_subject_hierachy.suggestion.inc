@@ -9,22 +9,23 @@ function bibdk_subject_hierachy_suggestion_form($form, &$form_state) {
     $form_state['stage'] = 'suggest_subject';
   }
   
-  $form = array();
-  $form = bibdk_subject_hierachy_suggestion_get_header($form, $form_state);
+  switch ( $form_state['stage'] ) {
 
-  switch ($form_state['stage']) {
-     
     case 'suggest_subject':
       return bibdk_subject_hierachy_send_suggestion_form($form, $form_state);
-     break;  
+      break;  
   
     case 'confirm_suggestion': 
       return bibdk_subject_hierachy_confirm_suggestion_form($form, $form_state);  
-     break;
+      break;
+ 
+    case 'is_confirmed': 
+      return bibdk_subject_hierachy_confirmed_suggestion_form($form, $form_state);  
+      break;
  
     default:
-      return bibdk_subject_hierachy_suggestion_form($form, $form_state);
-     break; 
+      return bibdk_subject_hierachy_send_suggestion_form($form, $form_state);
+      break; 
   }
    
   return $form;
@@ -34,10 +35,10 @@ function bibdk_subject_hierachy_suggestion_form($form, &$form_state) {
 
 
 function bibdk_subject_hierachy_send_suggestion_form($form, &$form_state) {
-     
+
   $header = array(
     '#type' => 'container',
-    '#id' => 'search-hierarchy-suggestion-form',
+    '#id' => 'search-hierarchy-suggestion-header',
     '#attributes' => array(
       'class' => array('header'),
     ),
@@ -52,27 +53,28 @@ function bibdk_subject_hierachy_send_suggestion_form($form, &$form_state) {
   $header['suggestion_text'] = array(
     '#theme' => 'html_tag',
     '#tag' => 'h2',
-    '#value' => t('Did you not find the subject you were looking for? If you have suggestions for new subjects - write it in the box.', array(), array('context' => 'bibdk_subject_hierarchy') ),
+    '#value' => t("Didn't you find the subject you were looking for? If you have suggestions for new subjects - write it in the box.", array(), array('context' => 'bibdk_subject_hierarchy') ),
   );
 
-  $form['subject-hierarchy-suggestion-header'] = $header;
+  $form['subject_hierarchy_suggestion_header'] = $header;
 
-  $form['subject-hierarchy-suggestion'] = array(
+  $form['subject_hierarchy_suggestion'] = array(
     '#type' => 'textfield',
     '#attributes' => array(
       'class' => array('search-hierarchy-suggestion-input'),
       'placeholder' => t('suggest a subject for the subject hierarchy'),
     ),
+    '#default_value' => isset($values['subject_hierarchy_suggestion']) ? $values['subject_hierarchy_suggestion'] : NULL,
   );
 
-  $form['subject-hierarchy-submit'] = array(
+  $form['subject_hierarchy_submit_suggestion'] = array(
     '#type' => 'submit',
     '#value' => t('Send suggestion'),
     '#attributes' => array(
       'class' => array('searchfield-submit'),
     ),
     '#ajax' => array(
-      'callback' => 'bibdk_subject_hierachy_suggestion_confirmation_form',
+      'callback' => 'bibdk_subject_hierachy_suggestion_form_submit',
       'wrapper' => 'bibdk-subject-hierarchy-searchresult',
       'method' => 'replace',
       'effect' => 'fade',
@@ -81,7 +83,9 @@ function bibdk_subject_hierachy_send_suggestion_form($form, &$form_state) {
   );
   
   return $form;
+
 }
+
 
 
 /** Create subject hierachy suggestion conformation form
@@ -89,13 +93,13 @@ function bibdk_subject_hierachy_send_suggestion_form($form, &$form_state) {
  */
 function bibdk_subject_hierachy_confirm_suggestion_form($form, &$form_state) {
 
-// watchdog('confirmation_form', '<pre>' . print_r($form_state, 1) . '</pre>');
-
-  $suggestion = $form_state['values']['subject-hierarchy-suggestion'];
+  $values = isset($form_state['multistep_values']['suggest_subject']) ? $form_state['multistep_values']['suggest_subject'] : array();
+  
+  $suggestion = isset($values['subject_hierarchy_suggestion']) ? $values['subject_hierarchy_suggestion'] : NULL;
 
   $header = array(
     '#type' => 'container',
-    '#id' => 'search-hierarchy-suggestion-confirmation-form',
+    '#id' => 'search-hierarchy-suggestion-header',
     '#attributes' => array(
       'class' => array('header'),
     ),
@@ -134,17 +138,14 @@ function bibdk_subject_hierachy_confirm_suggestion_form($form, &$form_state) {
     '#value' => $suggestion,
   );
 
-  $form['subject-hierarchy-suggestion-header'] = $header;
+  $form['subject_hierarchy_suggestion_header'] = $header;
 
-  $form['subject-hierarchy-suggestion'] = array(
+  $form['subject_hierarchy_suggestion'] = array(
     '#type' => 'hidden',
-    '#value' => $suggestion,
-    '#attributes' => array(
-      'value' => $suggestion,
-    ),
+    '#default_value' => $suggestion,
   );
 
-  $form['subject-hierarchy-submit'] = array(
+  $form['subject_hierarchy_submit_confirmation'] = array(
     '#type' => 'submit',
     '#value' => t('Confirm suggestion'),
     '#attributes' => array(
@@ -159,55 +160,20 @@ function bibdk_subject_hierachy_confirm_suggestion_form($form, &$form_state) {
     ),
   );
 
-/*
-  $return['bibdk-subject-hierarchy-suggestion-container'] = array(
-    '#type' => 'container',
-    '#attributes' => array(
-      'id' => array('bibdk-subject-hierarchy-searchresult'),
-      'class' => array('bibdk-subject-hierarchy-searchresult', 'themes__sublists'),
-    ),
-    'suggestionform' => $form,
-  );
-*/
-
   return $form;
 
 }
 
 
-function bibdk_subject_hierachy_suggestion_validate($form, &$form_state) {
-     
-  if ($form_state['triggering_element']['#value'] == 'Back') {
-    return;
-  }  
-     
-  switch ($form_state['stage']) { 
-       
-    case 'rate_the_room':
-      return customer_survey_rate_the_room_validate($form, $form_state);
-     break;  
-  
-    case 'rate_the_service': 
-      return customer_survey_rate_the_service_validate($form, $form_state);  
-     break;
- 
-    case 'personal_details': 
-      return customer_survey_personal_details_validate($form, $form_state);  
-     break;
-  
-  }
-}
 
-
-
-
-/** Subject hierachy suggestion form submit method
- *
+/** Create subject hierachy suggestion conformation form
  *  * @return array
  */
-function bibdk_subject_hierachy_suggestion_form_submit($form, &$form_state) {
+function bibdk_subject_hierachy_confirmed_suggestion_form($form, &$form_state) {
 
-  $suggestion = $form_state['values']['subject-hierarchy-suggestion'];
+  $values = isset($form_state['multistep_values']['confirm_suggestion']) ? $form_state['multistep_values']['confirm_suggestion'] : array();
+
+  $suggestion = isset($values['subject_hierarchy_suggestion']) ? $values['subject_hierarchy_suggestion'] : NULL;
 
   $header = array(
     '#type' => 'container',
@@ -240,55 +206,91 @@ function bibdk_subject_hierachy_suggestion_form_submit($form, &$form_state) {
     '#value' => t('We will look at suggestions next time we update the subject hierarchy.', array(), array('context' => 'bibdk_subject_hierarchy') ),
   );
 
-  $return['bibdk-subject-hierarchy-suggestionresults'] = array(
+  $form['bibdk_subject_hierarchy_suggestionresults'] = array(
+    'header' => $header,
+  );
+
+  return $form;
+
+}
+
+
+
+function bibdk_subject_hierachy_suggestion_form_validate($form, &$form_state) {
+     
+  switch ($form_state['stage']) { 
+       
+    case 'suggest_subject':
+    case 'confirm_suggestion': 
+      $suggestion = isset($form_state['values']['subject_hierarchy_suggestion']) ? $form_state['values']['subject_hierarchy_suggestion'] : NULL;
+      if ( empty($suggestion) ) {
+        form_set_error('subject_hierarchy_suggestion', t('suggestion cant be empty'));
+      }
+      $form_state['values']['subject_hierarchy_suggestion'] = check_plain($suggestion);
+      break;  
+  
+  }
+  
+  return;
+
+}
+
+
+
+function bibdk_subject_hierachy_suggestion_move_to_next_stage($form, &$form_state) {
+ 
+  switch ( $form_state['stage'] ) {
+    case 'suggest_subject':
+      return 'confirm_suggestion';
+     break;
+    case 'confirm_suggestion':
+      return 'is_confirmed';
+     break;
+  }
+ 
+}
+
+
+
+/** Subject hierachy suggestion form submit method
+ *
+ *  * @return array
+ */
+function bibdk_subject_hierachy_suggestion_form_submit($form, &$form_state) {
+   
+  watchdog('suggestion_form', '<pre>' . print_r($form_state['stage'], 1) . '</pre>');
+
+  switch ( $form_state['stage'] ) {
+     
+    case 'is_confirmed':
+      $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
+      // admin_suggestion_email($form, $form_state);
+     break;
+  
+    default:
+      $form_state['multistep_values'][$form_state['stage']] = $form_state['values'];
+      $form_state['new_stage'] = bibdk_subject_hierachy_suggestion_move_to_next_stage($form, $form_state);
+     break;
+  
+  }
+ 
+  if ( isset($form_state['multistep_values']['form_build_id']) ) {
+    $form_state['values']['form_build_id'] = $form_state['multistep_values']['form_build_id'];
+  }
+
+  $form_state['multistep_values']['form_build_id'] = $form_state['values']['form_build_id'];
+  $form_state['stage'] = $form_state['new_stage'];
+  $form_state['rebuild'] = TRUE;
+
+  $suggestion_form = array(
     '#type' => 'container',
     '#attributes' => array(
       'id' => array('bibdk-subject-hierarchy-searchresult'),
       'class' => array('bibdk-subject-hierarchy-searchresult', 'themes__sublists'),
     ),
-    'header' => $header,
-    'suggestion' => $suggestion,
+    'suggestion_form' => $form,
   );
 
-  $commands[] = array(
-    'command' => 'afterAjaxSubmit',
-    'value' => drupal_render($return),
-    'selector' => '#bibdk-subject-hierarchy-searchresult'
-  );
-
-  return array('#type' => 'ajax', '#commands' => $commands);
+  return drupal_render($suggestion_form);     
 
 }
-
-
-/** Get searchresult on term
- *
- * @param $term
- */
-/*
-function bibdk_subject_hierachy_searchfield_custom_search($term) {
-  $params['agency'] = variable_get('ting_agency');
-  $params['profile'] = variable_get('ting_search_profile', FALSE);
-  $params['numResults'] = 0;
-  $params['objectFormat'] = 'DKABM';
-  $params['collectionType'] = 'work';
-  $params['query'] = $term;
-
-  $client = new ting_client_class();
-  $opensearch_result = $client->do_request('search', $params);
-
-  $return['result']['#markup'] = t('A search on %term gives %results results', array('%term' => $term, '%results' => $opensearch_result->numTotalObjects)) . ' ';
-  $return['link'] = array(
-    '#theme' => 'link',
-    '#path' => 'search/work/' . $term,
-    '#text' => t('Show result'),
-    '#options' => array(
-      'attributes' => array(),
-      'html' => false,
-    ),
-  );
-
-  return $return;
-
-}
-*/
