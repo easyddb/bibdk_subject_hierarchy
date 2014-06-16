@@ -11,7 +11,9 @@
     <div class="clearfix">
       <div class="bibdk-subject-hierarchy-header">
         <?php print $header; ?>
-
+      </div>
+      <div class="bibdk-subject-hierarchy-helptext">
+        <?php print $helptext; ?>
       </div>
       <div class="subject-hierachy-searchfield">
         <?php print drupal_render($searchfield); ?>
