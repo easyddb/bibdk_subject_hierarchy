@@ -1,4 +1,4 @@
 bibdk_subject_hierarchy
 =======================
 
-Create a subjects hierachy with cql queries for OpenSearch
+Create a subjects hierarchy with cql queries for OpenSearch
