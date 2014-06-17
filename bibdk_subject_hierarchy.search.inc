@@ -205,6 +205,7 @@ function bibdk_subject_hierarchy_searchfield_form_submit($form, &$form_state) {
     '#tag' => 'h1',
     '#value' => t('Subject hierarchy searchresult on @term', array('@term' => $search_term))
   );
+
   $header['result_text'] = array(
     '#theme' => 'html_tag',
     '#tag' => 'h2',

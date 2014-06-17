@@ -20,4 +20,16 @@
         });
     }
 
+    Drupal.behaviors.subject_hierarchy_suggestion_close = {
+        attach: function (context) {
+            $('.close', context).click(function (e) {
+                e.preventDefault();
+                $('#bibdk-subject-hierarchy-searchresult').hide();
+                $('#bibdk-subject-hierarchy-content').fadeIn('200');
+            });
+        },
+        detach: function (context) {
+        }
+    };
+
 }(jQuery));

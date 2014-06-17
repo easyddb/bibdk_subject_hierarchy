@@ -39,6 +39,12 @@ function bibdk_subject_hierarchy_admin() {
  * Validation handler for bibdk_search_controls_admin.
  */
 function bibdk_subject_hierarchy_admin_validate($form, &$form_state) {
+  if ( !filter_var($form_state['values']['bibdk_subject_hierarchy_email_to'], FILTER_VALIDATE_EMAIL) ) {
+    form_set_error('bibdk_subject_hierarchy_email_to', t('Invalid "to" email address.'));
+  } 
+  if ( !filter_var($form_state['values']['bibdk_subject_hierarchy_email_from'], FILTER_VALIDATE_EMAIL) ) {
+    form_set_error('bibdk_subject_hierarchy_email_from', t('Invalid "from" email address.'));
+  } 
   return $form;
 }
 

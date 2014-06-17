@@ -9,9 +9,20 @@ function bibdk_subject_hierarchy_suggestion_form($form, &$form_state) {
     $form_state['stage'] = 'suggest_subject';
   }
   
+  $form['#attributes'] = array(
+    'class' => array('subject-hierarchy-suggestion-form', 'clearfix'),
+  );
+  
+  $form['#attached']['js'] = array(
+    drupal_get_path('module', 'bibdk_subject_hierarchy') . '/js/bibdk_subject_hierarchy.js',
+  );
+
   switch ( $form_state['stage'] ) {
 
     case 'suggest_subject':
+      $form['#attributes'] = array(
+        'class' => array('subject-hierarchy-suggestion-form', 'send-suggestion', 'clearfix'),
+      );
       return bibdk_subject_hierarchy_send_suggestion_form($form, $form_state);
       break;  
   
@@ -40,36 +51,44 @@ function bibdk_subject_hierarchy_send_suggestion_form($form, &$form_state) {
     '#type' => 'container',
     '#id' => 'search-hierarchy-suggestion-header',
     '#attributes' => array(
-      'class' => array('header'),
+      'class' => array('header', 'send-suggestion'),
     ),
   );
 
   $header['headline'] = array(
     '#theme' => 'html_tag',
     '#tag' => 'h1',
-    '#value' => t('Suggestions for new subjects?', array(), array('context' => 'bibdk_subject_hierarchy') ),
+    '#value' => t('HEADER_HIERARCHY_SEND_SUGGESTION', array(), array('context' => 'bibdk_subject_hierarchy') ),
   );
 
   $header['suggestion_text'] = array(
     '#theme' => 'html_tag',
     '#tag' => 'h2',
-    '#value' => t("Didn't you find the subject you were looking for? If you have suggestions for new subjects - write it in the box.", array(), array('context' => 'bibdk_subject_hierarchy') ),
+    '#value' => t("TEXT_HIERARCHY_SEND_SUGGESTION", array(), array('context' => 'bibdk_subject_hierarchy') ),
   );
 
-  $form['subject_hierarchy_suggestion_header'] = $header;
+  $form['bibdk_subject_hierarchy'] = array(
+    '#type' => 'fieldset',
+    '#tree' => FALSE,
+    '#attributes' => array(
+      'class' => array('header', 'fieldset-hierarchy-suggestion'),
+    ),
+  );
 
-  $form['subject_hierarchy_suggestion'] = array(
+  $form['bibdk_subject_hierarchy']['subject_hierarchy_suggestion_header'] = $header;
+
+  $form['bibdk_subject_hierarchy']['subject_hierarchy_suggestion'] = array(
     '#type' => 'textfield',
     '#attributes' => array(
-      'class' => array('search-hierarchy-suggestion-input'),
-      'placeholder' => t('suggest a subject for the subject hierarchy'),
+      'class' => array('search-hierarchy-suggestion-input searchfield-input'),
+      'placeholder' => t("PLACEHOLDER_HIERARCHY_SEND_SUGGESTION", array(), array('context' => 'bibdk_subject_hierarchy') ),
     ),
     '#default_value' => isset($values['subject_hierarchy_suggestion']) ? $values['subject_hierarchy_suggestion'] : NULL,
   );
 
-  $form['subject_hierarchy_submit_suggestion'] = array(
+  $form['bibdk_subject_hierarchy']['subject_hierarchy_submit_suggestion'] = array(
     '#type' => 'submit',
-    '#value' => t('Send suggestion'),
+    '#value' => t("BUTTON_HIERARCHY_SEND_SUGGESTION", array(), array('context' => 'bibdk_subject_hierarchy') ),
     '#attributes' => array(
       'class' => array('searchfield-submit'),
     ),
@@ -101,7 +120,7 @@ function bibdk_subject_hierarchy_confirm_suggestion_form($form, &$form_state) {
     '#type' => 'container',
     '#id' => 'search-hierarchy-suggestion-header',
     '#attributes' => array(
-      'class' => array('header'),
+      'class' => array('header', 'confirm-suggestion'),
     ),
   );
 
@@ -120,13 +139,13 @@ function bibdk_subject_hierarchy_confirm_suggestion_form($form, &$form_state) {
   $header['headline'] = array(
     '#theme' => 'html_tag',
     '#tag' => 'h1',
-    '#value' => t('Suggestion for new subject', array(), array('context' => 'bibdk_subject_hierarchy') ),
+    '#value' => t('HEADER_HIERARCHY_CONFIRM_SUGGESTION', array(), array('context' => 'bibdk_subject_hierarchy') ),
   );
 
   $header['suggestion_intro'] = array(
     '#theme' => 'html_tag',
     '#tag' => 'h2',
-    '#value' => t('Here is your suggestion', array(), array('context' => 'bibdk_subject_hierarchy') ),
+    '#value' => t('TEXT_HIERARCHY_CONFIRM_SUGGESTION', array(), array('context' => 'bibdk_subject_hierarchy') ),
   );
 
   $header['suggestion_text'] = array(
@@ -147,7 +166,7 @@ function bibdk_subject_hierarchy_confirm_suggestion_form($form, &$form_state) {
 
   $form['subject_hierarchy_submit_confirmation'] = array(
     '#type' => 'submit',
-    '#value' => t('Confirm suggestion'),
+    '#value' => t("BUTTON_HIERARCHY_CONFIRM_SUGGESTION", array(), array('context' => 'bibdk_subject_hierarchy') ),
     '#attributes' => array(
       'class' => array('searchfield-submit'),
     ),
@@ -178,7 +197,7 @@ function bibdk_subject_hierarchy_confirmed_suggestion_form($form, &$form_state) 
   $header = array(
     '#type' => 'container',
     '#attributes' => array(
-      'class' => array('header'),
+      'class' => array('header', 'confirmed-suggestion'),
     ),
   );
 
@@ -197,13 +216,13 @@ function bibdk_subject_hierarchy_confirmed_suggestion_form($form, &$form_state) 
   $header['headline'] = array(
     '#theme' => 'html_tag',
     '#tag' => 'h1',
-    '#value' => t('Thank you for your suggestion', array(), array('context' => 'bibdk_subject_hierarchy') ),
+    '#value' => t('HEADER_HIERARCHY_CONFIRMED_SUGGESTION', array(), array('context' => 'bibdk_subject_hierarchy') ),
   );
 
   $header['suggestion_text'] = array(
     '#theme' => 'html_tag',
     '#tag' => 'h2',
-    '#value' => t('We will look at suggestions next time we update the subject hierarchy.', array(), array('context' => 'bibdk_subject_hierarchy') ),
+    '#value' => t('TEXT_HIERARCHY_CONFIRMED_SUGGESTION', array(), array('context' => 'bibdk_subject_hierarchy') ),
   );
 
   $form['bibdk_subject_hierarchy_suggestionresults'] = array(
@@ -218,12 +237,13 @@ function bibdk_subject_hierarchy_confirmed_suggestion_form($form, &$form_state) 
 
 function bibdk_subject_hierarchy_suggestion_form_validate($form, &$form_state) {
      
+  $placeholder = t("PLACEHOLDER_HIERARCHY_SEND_SUGGESTION", array(), array('context' => 'bibdk_subject_hierarchy') );
   switch ($form_state['stage']) { 
        
     case 'suggest_subject':
     case 'confirm_suggestion': 
       $suggestion = isset($form_state['values']['subject_hierarchy_suggestion']) ? $form_state['values']['subject_hierarchy_suggestion'] : NULL;
-      if ( empty($suggestion) ) {
+      if ( empty($suggestion) || $suggestion == $placeholder ) {
         form_set_error('subject_hierarchy_suggestion', t('suggestion cant be empty'));
       }
       $form_state['values']['subject_hierarchy_suggestion'] = check_plain($suggestion);
@@ -258,8 +278,6 @@ function bibdk_subject_hierarchy_suggestion_move_to_next_stage($form, &$form_sta
  */
 function bibdk_subject_hierarchy_suggestion_form_submit($form, &$form_state) {
    
-  watchdog('suggestion_form', '<pre>' . print_r($form_state['stage'], 1) . '</pre>');
-
   switch ( $form_state['stage'] ) {
      
     case 'is_confirmed':
@@ -267,10 +285,9 @@ function bibdk_subject_hierarchy_suggestion_form_submit($form, &$form_state) {
       $suggestion = check_plain($form_state['values']['subject_hierarchy_suggestion']);
       $to = variable_get('bibdk_subject_hierarchy_email_to', NULL);
       $from = variable_get('bibdk_subject_hierarchy_email_from', NULL);
-      if ( $email ) {
+      if ( $to ) {
         drupal_mail('bibdk_subject_hierarchy', 'suggestion', $to, language_default(), $params = array('!suggestion' => $suggestion), $from);
       }
-      bibdk_subject_hierarchy_admin_suggestion_email($form, $form_state);
      break;
   
     default:
@@ -303,17 +320,13 @@ function bibdk_subject_hierarchy_suggestion_form_submit($form, &$form_state) {
 
 
 function bibdk_subject_hierarchy_mail($key, &$message, $params) {
-  // $data['user'] = $params['account'];
-  // $options['language'] = $message['language'];
-  // user_mail_tokens($variables, $data, $options);
-  watchdog('suggestion_form message', '<pre>' . print_r($message, 1) . '</pre>');
-  watchdog('suggestion_form params', '<pre>' . print_r($params, 1) . '</pre>');
 
   switch ( $key ) {
     case 'suggestion':
       $langcode = $message['language']->language;
-      $message['subject'] = t('Hierarchy suggestion from Bibliotek.dk', array(), array('langcode' => $langcode, 'context' => 'bibdk_subject_hierarchy'));
-      $message['body'][] = t("User hierarchy suggestion:\n\n!suggestion.", $params, array('langcode' => $langcode, 'context' => 'bibdk_subject_hierarchy') );
+      $message['subject'] = t('EMAIL_SUBJECT_HIERARCHY_SUGGESTION', array(), array('langcode' => $langcode, 'context' => 'bibdk_subject_hierarchy'));
+      $message['body'][] = t("EMAIL_BODY_HIERARCHY_SUGGESTION\n\n!suggestion", $params, array('langcode' => $langcode, 'context' => 'bibdk_subject_hierarchy') );
       break;
   }
+
 }
