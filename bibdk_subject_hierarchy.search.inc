@@ -212,6 +212,11 @@ function bibdk_subject_hierarchy_searchfield_form_submit($form, &$form_state) {
     '#value' => $result_text,
   );
 
+  $suggestionform = array();
+  if ( variable_get('bibdk_subject_hierarchy_email_to', NULL) ) {
+    $suggestionform = drupal_get_form('bibdk_subject_hierarchy_suggestion_form');
+  }
+
   $return['bibdk-subject-hierarchy-searchresults'] = array(
     '#type' => 'container',
     '#attributes' => array(
@@ -221,7 +226,7 @@ function bibdk_subject_hierarchy_searchfield_form_submit($form, &$form_state) {
     'header' => $header,
     'result' => $searchresult['result'],
     'well_result' => $search_in_well,
-    'suggestionform' => drupal_get_form('bibdk_subject_hierarchy_suggestion_form'),
+    'suggestionform' => $suggestionform,
   );
 
   $commands[] = array(
