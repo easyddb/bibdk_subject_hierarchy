@@ -15,7 +15,7 @@
       <div class="bibdk-subject-hierarchy-helptext">
         <?php print $helptext; ?>
       </div>
-      <div class="subject-hierachy-searchfield">
+      <div class="subject-hierarchy-searchfield">
         <?php print drupal_render($searchfield); ?>
       </div>
     </div>
