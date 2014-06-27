@@ -5,12 +5,16 @@
  */
 
 // includes search functionality
-include_once('bibdk_subject_hierachy.search.inc');
+include_once('bibdk_subject_hierarchy.search.inc');
+
+// includes suggestion functionality
+include_once('bibdk_subject_hierarchy.suggestion.inc');
 
 /**
  * Implements hook_menu().
  */
 function bibdk_subject_hierarchy_menu() {
+
   // Returns AJAX commands if the user has JavaScript turned on.
   $items['bibdk_subject_hierarchy/ajax/%'] = array(
     'title' => 'bibdk_subject_hierarchy callback',
@@ -19,6 +23,7 @@ function bibdk_subject_hierarchy_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
+
   // Returns a Non-JavaScript alternative.
   $items['bibdk_subject_hierarchy/nojs/%'] = array(
     'title' => 'bibdk_subject_hierarchy non-javascript callback',
@@ -26,6 +31,17 @@ function bibdk_subject_hierarchy_menu() {
     'page arguments' => array(2),
     'access arguments' => array('access content'),
   );
+
+  // Admin menu
+  $items['admin/config/search/bibdk_subject_hierarchy'] = array(
+    'title' => 'Subject hierarchy',
+    'description' => 'Set admin email for user suggestions',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bibdk_subject_hierarchy_admin'),
+    'access arguments' => array('administer search'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'bibdk_subject_hierarchy.admin.inc',
+   );
 
   return $items;
 }
@@ -148,9 +164,9 @@ function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
 function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
   $rendered = array();
 
-  $rows = _bibdk_subject_hierachy_get_arranged_items($hierarchy, $row_to_show);
+  $rows = _bibdk_subject_hierarchy_get_arranged_items($hierarchy, $row_to_show);
 
-  $prepared = _bibdk_subject_hierachy_prepare_rows_for_rendering($rows, $row_to_show);
+  $prepared = _bibdk_subject_hierarchy_prepare_rows_for_rendering($rows, $row_to_show);
 
   foreach ($prepared as $row) {
     $rendered[] = drupal_render($row);
@@ -159,7 +175,7 @@ function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
   return $rendered;
 }
 
-function _bibdk_subject_hierachy_prepare_rows_for_rendering($rows, $row_to_show) {
+function _bibdk_subject_hierarchy_prepare_rows_for_rendering($rows, $row_to_show) {
   $prepared = array();
 
   foreach ($rows as $key => $row) {
@@ -185,7 +201,7 @@ function _bibdk_subject_hierachy_prepare_rows_for_rendering($rows, $row_to_show)
   return $prepared;
 }
 
-function _bibdk_subject_hierachy_get_arranged_items($hierarchy, $row_to_show) {
+function _bibdk_subject_hierarchy_get_arranged_items($hierarchy, $row_to_show) {
   $rows = array();
 
   foreach ($hierarchy as $index => $item) {

@@ -2,7 +2,7 @@
 
 /** Get searchresult from subject hierarchy
  *
- * @param $hierachy
+ * @param $hierarchy
  * @param $term
  * @return array
  */
@@ -52,15 +52,15 @@ function _get_bibdk_subject_hierarchy_searchresult($term) {
  *
  * Traverses the subjecthierarcky and returns the indexes where the item contains the searchterm $searchterm
  *
- * @param $hierachy
+ * @param $hierarchy
  * @param $searchterm
  * @param array $hierarchy_level_index Records which level in the hierarchy we are traversing
  * @param array $results Keeps the current result indexes
  * @return array
  */
-function _get_bibdk_subject_hierarchy_searchresult_index($hierachy, $searchterm, $hierarchy_level_index = array(), &$results = array()) {
+function _get_bibdk_subject_hierarchy_searchresult_index($hierarchy, $searchterm, $hierarchy_level_index = array(), &$results = array()) {
 
-  foreach ($hierachy as $key => $item) {
+  foreach ($hierarchy as $key => $item) {
     // set level_index of current  item
     $current_level_index = $hierarchy_level_index;
     $current_level_index[] = $key;
@@ -135,16 +135,16 @@ function _get_bibdk_subject_hierarchy_searchresult_item_link($item, $key, $path)
 }
 
 
-/** Create subject hierachy search form
+/** Create subject hierarchy search form
  *  * @return array
  */
-function bibdk_subject_hierachy_searchfield_form($form, &$form_state) {
+function bibdk_subject_hierarchy_searchfield_form($form, &$form_state) {
   $form = array();
   $form['search-hierarchy-input'] = array(
     '#type' => 'textfield',
     '#attributes' => array(
       'class' => array('searchfield-input'),
-      'placeholder' => t('search in subject hierachy'),
+      'placeholder' => t('search in subject hierarchy'),
     ),
   );
 
@@ -155,7 +155,7 @@ function bibdk_subject_hierachy_searchfield_form($form, &$form_state) {
       'class' => array('searchfield-submit'),
     ),
     '#ajax' => array(
-      'callback' => 'bibdk_subject_hierachy_searchfield_form_submit',
+      'callback' => 'bibdk_subject_hierarchy_searchfield_form_submit',
       'wrapper' => 'bibdk-subject-hierarchy-searchresult',
       'method' => 'replace',
       'effect' => 'fade',
@@ -165,16 +165,16 @@ function bibdk_subject_hierachy_searchfield_form($form, &$form_state) {
   return $form;
 }
 
-/** Subject hierachy search form submit method
+/** Subject hierarchy search form submit method
  *
  *  * @return array
  */
-function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
+function bibdk_subject_hierarchy_searchfield_form_submit($form, &$form_state) {
 
   $search_term = $form_state['values']['search-hierarchy-input'];
 
   $searchresult = _get_bibdk_subject_hierarchy_searchresult($search_term);
-  $search_in_well = bibdk_subject_hierachy_searchfield_custom_search($search_term);
+  $search_in_well = bibdk_subject_hierarchy_searchfield_custom_search($search_term);
 
   $result_text = t('You got !number_of_results results in !number_of_groups groups', array(
     '!number_of_results' => $searchresult['number_of_results'],
@@ -205,11 +205,17 @@ function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
     '#tag' => 'h1',
     '#value' => t('Subject hierarchy searchresult on @term', array('@term' => $search_term))
   );
+
   $header['result_text'] = array(
     '#theme' => 'html_tag',
     '#tag' => 'h2',
     '#value' => $result_text,
   );
+
+  $suggestionform = array();
+  if ( variable_get('bibdk_subject_hierarchy_email_to', NULL) ) {
+    $suggestionform = drupal_get_form('bibdk_subject_hierarchy_suggestion_form');
+  }
 
   $return['bibdk-subject-hierarchy-searchresults'] = array(
     '#type' => 'container',
@@ -220,6 +226,7 @@ function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
     'header' => $header,
     'result' => $searchresult['result'],
     'well_result' => $search_in_well,
+    'suggestionform' => $suggestionform,
   );
 
   $commands[] = array(
@@ -236,7 +243,7 @@ function bibdk_subject_hierachy_searchfield_form_submit($form, &$form_state) {
  *
  * @param $term
  */
-function bibdk_subject_hierachy_searchfield_custom_search($term) {
+function bibdk_subject_hierarchy_searchfield_custom_search($term) {
   $params['agency'] = variable_get('ting_agency');
   $params['profile'] = variable_get('ting_search_profile', FALSE);
   $params['numResults'] = 0;
