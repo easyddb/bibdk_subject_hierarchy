@@ -26,10 +26,6 @@ function bibdk_subject_hierarchy_suggestion_form($form, &$form_state) {
       return bibdk_subject_hierarchy_send_suggestion_form($form, $form_state);
       break;  
   
-    case 'confirm_suggestion': 
-      return bibdk_subject_hierarchy_confirm_suggestion_form($form, $form_state);  
-      break;
- 
     case 'is_confirmed': 
       return bibdk_subject_hierarchy_confirmed_suggestion_form($form, $form_state);  
       break;
@@ -110,87 +106,9 @@ function bibdk_subject_hierarchy_send_suggestion_form($form, &$form_state) {
 /** Create subject hierarchy suggestion conformation form
  *  * @return array
  */
-function bibdk_subject_hierarchy_confirm_suggestion_form($form, &$form_state) {
-
-  $values = isset($form_state['multistep_values']['suggest_subject']) ? $form_state['multistep_values']['suggest_subject'] : array();
-  
-  $suggestion = isset($values['subject_hierarchy_suggestion']) ? $values['subject_hierarchy_suggestion'] : NULL;
-
-  $header = array(
-    '#type' => 'container',
-    '#id' => 'search-hierarchy-suggestion-header',
-    '#attributes' => array(
-      'class' => array('header', 'confirm-suggestion'),
-    ),
-  );
-
-  $header['close'] = array(
-    '#theme' => 'link',
-    '#path' => '',
-    '#text' => '&nbsp;',
-    '#options' => array(
-      'attributes' => array(
-        'class' => array('themes__close-button close icon icon-blue-x'),
-      ),
-      'html' => true,
-    ),
-  );
-
-  $header['headline'] = array(
-    '#theme' => 'html_tag',
-    '#tag' => 'h1',
-    '#value' => t('HEADER_HIERARCHY_CONFIRM_SUGGESTION', array(), array('context' => 'bibdk_subject_hierarchy') ),
-  );
-
-  $header['suggestion_intro'] = array(
-    '#theme' => 'html_tag',
-    '#tag' => 'h2',
-    '#value' => t('TEXT_HIERARCHY_CONFIRM_SUGGESTION', array(), array('context' => 'bibdk_subject_hierarchy') ),
-  );
-
-  $header['suggestion_text'] = array(
-    '#theme' => 'html_tag',
-    '#tag' => 'div',
-    '#attributes' => array(
-      'class' => array('suggestion-confirm-text'),
-    ),
-    '#value' => $suggestion,
-  );
-
-  $form['subject_hierarchy_suggestion_header'] = $header;
-
-  $form['subject_hierarchy_suggestion'] = array(
-    '#type' => 'hidden',
-    '#default_value' => $suggestion,
-  );
-
-  $form['subject_hierarchy_submit_confirmation'] = array(
-    '#type' => 'submit',
-    '#value' => t("BUTTON_HIERARCHY_CONFIRM_SUGGESTION", array(), array('context' => 'bibdk_subject_hierarchy') ),
-    '#attributes' => array(
-      'class' => array('searchfield-submit'),
-    ),
-    '#ajax' => array(
-      'callback' => 'bibdk_subject_hierarchy_suggestion_form_submit',
-      'wrapper' => 'bibdk-subject-hierarchy-searchresult',
-      'method' => 'replace',
-      'effect' => 'fade',
-      'event' => 'click',
-    ),
-  );
-
-  return $form;
-
-}
-
-
-
-/** Create subject hierarchy suggestion conformation form
- *  * @return array
- */
 function bibdk_subject_hierarchy_confirmed_suggestion_form($form, &$form_state) {
 
-  $values = isset($form_state['multistep_values']['confirm_suggestion']) ? $form_state['multistep_values']['confirm_suggestion'] : array();
+  $values = isset($form_state['multistep_values']['suggest_subject']) ? $form_state['multistep_values']['suggest_subject'] : array();
 
   $suggestion = isset($values['subject_hierarchy_suggestion']) ? $values['subject_hierarchy_suggestion'] : NULL;
 
@@ -241,7 +159,6 @@ function bibdk_subject_hierarchy_suggestion_form_validate($form, &$form_state) {
   switch ($form_state['stage']) { 
        
     case 'suggest_subject':
-    case 'confirm_suggestion': 
       $suggestion = isset($form_state['values']['subject_hierarchy_suggestion']) ? $form_state['values']['subject_hierarchy_suggestion'] : NULL;
       if ( empty($suggestion) || $suggestion == $placeholder ) {
         form_set_error('subject_hierarchy_suggestion', t('suggestion cant be empty'));
@@ -261,11 +178,8 @@ function bibdk_subject_hierarchy_suggestion_move_to_next_stage($form, &$form_sta
  
   switch ( $form_state['stage'] ) {
     case 'suggest_subject':
-      return 'confirm_suggestion';
-     break;
-    case 'confirm_suggestion':
       return 'is_confirmed';
-     break;
+      break;
   }
  
 }
