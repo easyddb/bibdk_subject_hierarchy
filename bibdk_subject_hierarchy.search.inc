@@ -244,20 +244,13 @@ function bibdk_subject_hierarchy_searchfield_form_submit($form, &$form_state) {
  * @param $term
  */
 function bibdk_subject_hierarchy_searchfield_custom_search($term) {
-  $params['agency'] = variable_get('ting_agency');
-  $params['profile'] = variable_get('ting_search_profile', FALSE);
-  $params['numResults'] = 0;
-  $params['objectFormat'] = 'DKABM';
-  $params['collectionType'] = 'work';
-  $params['query'] = $term;
+  module_load_include('client.inc', 'ting');
+  $result = ting_do_search($term, 0, 0, array());
 
-  $client = new ting_client_class();
-  $opensearch_result = $client->do_request('search', $params);
-
-  $return['result']['#markup'] = t('A search on %term gives %results results', array('%term' => $term, '%results' => $opensearch_result->numTotalObjects)) . ' ';
+  $return['result']['#markup'] = t('A search on %term gives %results results', array('%term' => $term, '%results' => $result->numTotalObjects)) . ' ';
   $return['link'] = array(
     '#theme' => 'link',
-    '#path' => 'search/work/' . $term,
+    '#path' => 'search/ting/' . $term,
     '#text' => t('Show result'),
     '#options' => array(
       'attributes' => array(),
