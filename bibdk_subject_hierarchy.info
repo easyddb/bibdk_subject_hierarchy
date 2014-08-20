@@ -18,4 +18,5 @@ files[] = bibdk_subject_hierarchy.suggestion.inc
 
 configure = admin/config/search/bibdk_subject_hierarchy
 
-dependencies[] = cql_strict_parser
+; optional:
+; dependencies[] = cql_strict_parser
