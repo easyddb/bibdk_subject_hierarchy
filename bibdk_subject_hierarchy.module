@@ -381,9 +381,9 @@ function _bibdk_subject_hierarchy_read_data() {
  */
 function _bibdk_subject_hierarchy_parse_xml($file) {
   require_once('lib/xml_func.php');
+
   if ($file = utf8_encode($file)) {
     $emnehierarki = xml2array($file);
-
     return _bibdk_subject_hierarchy_parse($emnehierarki['term']);
   }
 
@@ -394,6 +394,7 @@ function _bibdk_subject_hierarchy_parse_xml($file) {
  * Parse hierarchy xml into an array
  */
 function _bibdk_subject_hierarchy_parse($terms) {
+
   while (list($n, $term) = each($terms)) {
     $record[$n] = _bibdk_subject_hierarchy_parse_term($term);
   }
@@ -485,6 +486,10 @@ function _bibdk_subject_hierarchy_parse_term($term) {
         $cql = str_ireplace($replaceFromLongterm, $replaceToLongterm, $cql);
         $cql = str_ireplace($replaceFromBoolean, $replaceToBoolean, $cql);
         $record['cql'] = $cql;
+        if ( class_exists('CQLStrictParser') ) {
+          $cql_strict_parser = new CQLStrictParser;
+          $record['cql'] = $cql_strict_parser->parse($cql);
+        }
         $record[$key] = $item;
       }
       elseif ($key == 'ord') {
