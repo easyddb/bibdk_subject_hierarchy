@@ -1,7 +1,7 @@
 name = Bibliotek.dk - Subject hierarchy
 description = Provide a subject hierarchy for Bibliotek.dk.
 core = 7.x
-version = 7.x-0.10
+version = 7.x-0.11
 package = Bibliotek.dk
 
 files[] = lib/xml_func.php
@@ -17,3 +17,6 @@ files[] = bibdk_subject_hierarchy.search.inc
 files[] = bibdk_subject_hierarchy.suggestion.inc
 
 configure = admin/config/search/bibdk_subject_hierarchy
+
+; optional:
+; dependencies[] = cql_strict_parser
