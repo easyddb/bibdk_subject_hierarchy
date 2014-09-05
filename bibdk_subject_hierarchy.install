@@ -71,7 +71,7 @@ function bibdk_subject_hierarchy_update_7001(&$sandbox) {
 /**
  * update hierarchy
  */
-function bibdk_subject_hierarchy_update_7008(&$sandbox) {
+function bibdk_subject_hierarchy_update_7009(&$sandbox) {
   _update_bibdk_subject_hierarchy();
 }
 
