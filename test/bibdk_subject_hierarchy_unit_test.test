@@ -12,9 +12,9 @@ class BibdkSubjectHierarchyUnitTestCase extends DrupalUnitTestCase {
 
   public function test_bibdk_subject_hierarchy_unit_test() {
 
+    module_load_include('inc', 'cql_strict_parser', 'lib/cql_strict_parser');
     module_load_include('module', 'bibdk_subject_hierarchy', 'bibdk_subject_hierarchy');
     // include_once('emnehierarki_test_data.php');
-
     // test XML hierarchy is present
     $this->assertTrue(_bibdk_subject_hierarchy_read_data(), 'XML hierarchy file is present.');
 
@@ -73,25 +73,25 @@ class BibdkSubjectHierarchyUnitTestCase extends DrupalUnitTestCase {
     $this->assertTrue($file, 'Test XML file exist.');
 
     // test _bibdk_subject_hierarchy_parse_xml($file)
-    $emnehierarki_out = 'a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL0";s:3:"ord";s:10:"ord level0";s:3:"cql";s:10:"ccl level0";s:3:"ccl";s:10:"ccl level0";s:9:"kommentar";s:16:"kommentar level0";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL1";s:3:"ord";s:10:"Ord level1";s:3:"cql";s:10:"ccl level1";s:3:"ccl";s:10:"ccl level1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL2";s:3:"ord";s:10:"Ord level2";s:3:"cql";s:10:"ccl level2";s:3:"ccl";s:10:"ccl level2";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:3:{i:0;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL30";s:3:"ord";s:12:"Ord level3.0";s:3:"cql";s:12:"ccl level3.0";s:3:"ccl";s:12:"ccl level3.0";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}i:1;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL31";s:3:"ord";s:12:"Ord level3.1";s:3:"cql";s:12:"ccl level3.1";s:3:"ccl";s:12:"ccl level3.1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}i:2;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL32";s:3:"ord";s:12:"Ord level3.2";s:3:"cql";s:12:"ccl level3.2";s:3:"ccl";s:12:"ccl level3.2";s:9:"kommentar";s:6:"poster";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}}}}}}}}';
+    $emnehierarki_out = 'a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL0";s:3:"ord";s:10:"ord level0";s:3:"cql";s:12:""ccl level0"";s:3:"ccl";s:10:"ccl level0";s:9:"kommentar";s:16:"kommentar level0";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL1";s:3:"ord";s:10:"Ord level1";s:3:"cql";s:12:""ccl level1"";s:3:"ccl";s:10:"ccl level1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:1:{i:0;a:9:{s:4:"note";s:16:"LABEL_ORD_LEVEL2";s:3:"ord";s:10:"Ord level2";s:3:"cql";s:12:""ccl level2"";s:3:"ccl";s:10:"ccl level2";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";s:4:"term";a:3:{i:0;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL30";s:3:"ord";s:12:"Ord level3.0";s:3:"cql";s:14:""ccl level3.0"";s:3:"ccl";s:12:"ccl level3.0";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}i:1;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL31";s:3:"ord";s:12:"Ord level3.1";s:3:"cql";s:14:""ccl level3.1"";s:3:"ccl";s:12:"ccl level3.1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}i:2;a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL32";s:3:"ord";s:12:"Ord level3.2";s:3:"cql";s:14:""ccl level3.2"";s:3:"ccl";s:12:"ccl level3.2";s:9:"kommentar";s:6:"poster";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}}}}}}}}';
     if ($file) {
       $emnehierarki_test = _bibdk_subject_hierarchy_parse_xml($file);
+
       $this->assertTrue((serialize($emnehierarki_test) == $emnehierarki_out), 'Test XML file parsed correctly.');
     }
 
     // test _bibdk_subject_hierarchy_parse_term($term)
-    $breadcrumbs_out = 'a:4:{i:0;a:6:{s:6:"#theme";s:4:"link";s:5:"#text";s:10:"ord level0";s:5:"#path";s:22:"search/work/ccl level0";s:8:"#options";a:2:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:4:"last";}}s:4:"html";b:0;}s:4:"#key";s:1:"0";s:10:"#keys_path";s:5:"0,0,1";}i:1;a:6:{s:6:"#theme";s:4:"link";s:5:"#text";s:10:"Ord level1";s:5:"#path";s:22:"search/work/ccl level1";s:8:"#options";a:2:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:4:"last";}}s:4:"html";b:0;}s:4:"#key";s:1:"0";s:10:"#keys_path";s:3:"0,1";}i:2;a:6:{s:6:"#theme";s:4:"link";s:5:"#text";s:10:"Ord level2";s:5:"#path";s:22:"search/work/ccl level2";s:8:"#options";a:2:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:4:"last";}}s:4:"html";b:0;}s:4:"#key";s:1:"0";s:10:"#keys_path";s:1:"1";}i:3;a:6:{s:6:"#theme";s:4:"link";s:5:"#text";s:12:"Ord level3.1";s:5:"#path";s:24:"search/work/ccl level3.1";s:8:"#options";a:2:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:4:"last";}}s:4:"html";b:0;}s:4:"#key";s:1:"1";s:10:"#keys_path";s:0:"";}}';
+    $breadcrumbs_out = 'a:4:{i:0;a:6:{s:6:"#theme";s:4:"link";s:5:"#text";s:10:"ord level0";s:5:"#path";s:24:"search/work/"ccl level0"";s:8:"#options";a:2:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:4:"last";}}s:4:"html";b:0;}s:4:"#key";s:1:"0";s:10:"#keys_path";s:5:"0,0,1";}i:1;a:6:{s:6:"#theme";s:4:"link";s:5:"#text";s:10:"Ord level1";s:5:"#path";s:24:"search/work/"ccl level1"";s:8:"#options";a:2:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:4:"last";}}s:4:"html";b:0;}s:4:"#key";s:1:"0";s:10:"#keys_path";s:3:"0,1";}i:2;a:6:{s:6:"#theme";s:4:"link";s:5:"#text";s:10:"Ord level2";s:5:"#path";s:24:"search/work/"ccl level2"";s:8:"#options";a:2:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:4:"last";}}s:4:"html";b:0;}s:4:"#key";s:1:"0";s:10:"#keys_path";s:1:"1";}i:3;a:6:{s:6:"#theme";s:4:"link";s:5:"#text";s:12:"Ord level3.1";s:5:"#path";s:26:"search/work/"ccl level3.1"";s:8:"#options";a:2:{s:10:"attributes";a:1:{s:5:"class";a:1:{i:0;s:4:"last";}}s:4:"html";b:0;}s:4:"#key";s:1:"1";s:10:"#keys_path";s:0:"";}}';
     $breadcrumbs = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki_test, array(
       '0',
       '0',
       '0',
       '1'
     ));
-
     $this->assertTrue((serialize($breadcrumbs) == $breadcrumbs_out), 'Test XML file breadcrumbs parsed correctly.');
 
     // tect _get_bibdk_subject_hierarchy_level()
-    $hierarchy_level_out = 'a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL31";s:3:"ord";s:12:"Ord level3.1";s:3:"cql";s:12:"ccl level3.1";s:3:"ccl";s:12:"ccl level3.1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}';
+    $hierarchy_level_out = 'a:8:{s:4:"note";s:17:"LABEL_ORD_LEVEL31";s:3:"ord";s:12:"Ord level3.1";s:3:"cql";s:14:""ccl level3.1"";s:3:"ccl";s:12:"ccl level3.1";s:9:"kommentar";s:0:"";s:12:"hjaelpetekst";s:0:"";s:9:"infotekst";s:0:"";s:12:"visundermenu";s:1:"1";}';
     $hierarchy_level = _get_bibdk_subject_hierarchy_level($emnehierarki_test[0], array(
       '0',
       '0',
