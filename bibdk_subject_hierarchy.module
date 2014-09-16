@@ -82,6 +82,7 @@ function bibdk_subject_hierarchy_block_view($delta = '') {
       // Load in Drupal core AJAX library.
       drupal_add_library('system', 'drupal.ajax');
       drupal_add_js(drupal_get_path('module', 'bibdk_subject_hierarchy') . '/js/bibdk_subject_hierarchy.js');
+      drupal_add_js(drupal_get_path('module', 'ting_search') . '/js/ting_search_overlay.js');
       $block['title'] = '<none>';
       $block['subject'] = t('Bibliotek.dk subject hierarchy', array());
       $block['content'] = bibdk_subject_hierarchy_get_block_content();
