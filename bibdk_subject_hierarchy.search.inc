@@ -245,6 +245,11 @@ function bibdk_subject_hierarchy_searchfield_form_submit($form, &$form_state) {
  */
 function bibdk_subject_hierarchy_searchfield_custom_search($term) {
   module_load_include('client.inc', 'ting');
+  
+  // First, try to get same query on cql.
+  $obj = new ccl2cql($term);
+  $term = $obj->getCql();
+  
   $result = ting_do_search($term, 0, 0, array());
 
   $return['result']['#markup'] = t('A search on %term gives %results results', array('%term' => $term, '%results' => $result->numTotalObjects)) . ' ';

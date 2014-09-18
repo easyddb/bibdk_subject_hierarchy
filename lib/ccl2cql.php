@@ -2,9 +2,11 @@
 
 class ccl2cql {
 
-  private $replaceFrom = array(' og ', ' eller ', ' ikke');
+  private $replaceFrom = array(' and ', ' or ', ' not');
 
-  private $replaceTo = array(' OG ', ' ELLER ', ' IKKE');
+  private $replaceTo = array(' AND ', ' OR ', ' NOT');
+
+  private $cql = '';
 
   /**
    * @param stdClass $response
@@ -25,8 +27,12 @@ class ccl2cql {
     return $this->error;
   }
 
+  public function getCql() {
+    return $this->cql;
+  }
+
   private function parseCCL($ccl) {
-    $this->cql = str_replace($replaceFrom, $replaceTo, $ccl);
+    $this->cql = str_replace($this->replaceFrom, $this->replaceTo, $ccl);
     return $this->cql;
   }
 
