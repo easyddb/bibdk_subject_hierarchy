@@ -469,9 +469,9 @@ function _bibdk_subject_hierarchy_parse_term($term) {
   );
 
   $replaceToBoolean = array(
-    ' OG ',
-    ' ELLER ',
-    ' IKKE',
+    ' AND ',
+    ' OR ',
+    ' NOT',
     '*'
   );
 
