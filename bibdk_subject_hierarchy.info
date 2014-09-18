@@ -4,6 +4,8 @@ core = 7.x
 version = 7.x-0.10
 package = Bibliotek.dk
 
+dependencies[] = ting_search
+
 files[] = lib/xml_func.php
 files[] = lib/ccl2cql.php
 files[] = test/bibdk_subject_hierarchy_web_test.test
