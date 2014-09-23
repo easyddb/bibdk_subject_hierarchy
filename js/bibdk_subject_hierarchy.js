@@ -6,6 +6,10 @@
                 $('.themes__item').removeClass('themes__item--active');
                 $('.themes__sublists__wrapper').fadeOut('200');
             });
+
+            $('.themes__sublist li:not(".nesting")', context).click(function(){
+                Drupal.TingSearchOverlay();
+            });
         }
     };
     Drupal.ajax.prototype.commands.afterAjaxSubmit = function(ajax, response, status) {
