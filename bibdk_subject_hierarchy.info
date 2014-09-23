@@ -1,8 +1,8 @@
-name = Bibliotek.dk - Subject hierarchy
-description = Provide a subject hierarchy for Bibliotek.dk.
+name = Subject hierarchy - Bibliotek.dk
+description = Provide a subject hierarchy list.
 core = 7.x
-version = 7.x-0.10
-package = Bibliotek.dk
+version = 7.x-1.0
+package = easyDDB
 
 dependencies[] = ting_search
 
