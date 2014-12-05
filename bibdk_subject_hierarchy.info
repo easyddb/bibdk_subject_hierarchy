@@ -1,7 +1,7 @@
 name = Subject hierarchy - Bibliotek.dk
 description = Provide a subject hierarchy list.
 core = 7.x
-version = 7.x-1.0
+version = 7.x-1.0.1
 package = easyDDB
 
 dependencies[] = ting_search
@@ -19,3 +19,4 @@ files[] = bibdk_subject_hierarchy.search.inc
 files[] = bibdk_subject_hierarchy.suggestion.inc
 
 configure = admin/config/search/bibdk_subject_hierarchy
+
