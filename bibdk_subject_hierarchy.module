@@ -485,13 +485,13 @@ function _bibdk_subject_hierarchy_parse_term($term) {
         $cql = str_ireplace($replaceFromShortterm, $replaceToShortterm, $item);
         $cql = str_ireplace($replaceFromLongterm, $replaceToLongterm, $cql);
         $cql = str_ireplace($replaceFromBoolean, $replaceToBoolean, $cql);
-        if (preg_match('/[=]/', $cql)) {
-          $cql = preg_replace('/(?>(?!(?>[OR]|[AND]|[NOT]|\w+\.|\w+=|\s))[\w\d\.\*æø-]+\s)+/', '"0" ', $cql);
-          $cql = preg_replace_callback( "/=\(([^(]+)\)/",  function ($matches) { return preg_replace('/(?>\s?(?![OR]|[AND]|[NOT])([\w\d\*\.æø-]+))+/', ' "$1"', $matches[0]); }, $cql);
-        }
-        else {
+
+        $parts = preg_split('/(\s?(?>OR|AND|NOT|\)|\(\=)\s?)/', $cql, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
+        foreach ($parts as $part) {
           $cql = preg_replace('/(?:\s?(?![OR]|[AND]|[NOT])[\w\d\.\*æø-]+)+/',' "$0"', $cql);
         }
+
         $record['cql'] = $cql;
         $record[$key] = $item;
       }
