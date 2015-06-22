@@ -486,12 +486,13 @@ function _bibdk_subject_hierarchy_parse_term($term) {
         $cql = str_ireplace($replaceFromLongterm, $replaceToLongterm, $cql);
         $cql = str_ireplace($replaceFromBoolean, $replaceToBoolean, $cql);
 
-        $parts = preg_split('/(\s?(?>OR|AND|NOT|\)|\(\=)\s?)/', $cql, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $parts = preg_split('/(\s(?>or|and|not|\)|\(|\=)\s)/i', $cql, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
-        foreach ($parts as $part) {
-          $cql = preg_replace('/(?:\s?(?![OR]|[AND]|[NOT])[\w\d\.\*æø-]+)+/',' "$0"', $cql);
+        foreach ($parts as $key => $part) {
+          $parts[$key] = preg_replace('/((?>[\w\d\.\*ÆØÅæøå-]+\s*){2,})/','"$0"', $part);
         }
 
+        $cql = implode('', $parts);
         $record['cql'] = $cql;
         $record[$key] = $item;
       }
