@@ -95,6 +95,27 @@ function bibdk_subject_hierarchy_block_view($delta = '') {
 }
 
 /**
+ * Implements hook_cron().
+ */
+function bibdk_subject_hierarchy_cron() {
+  $interval = variable_get('bibdk_subject_hierarchy_interval', 60 * 60);
+  if (time() >= variable_get('bibdk_subject_hierarchy_next_execution', 0)) {
+    $urls = array(
+      'https://raw.githubusercontent.com/DBCDK/bibdk_subject_hierarchy/master/data/emnehierarki_full.xml',
+      'https://raw.githubusercontent.com/DBCDK/bibdk_subject_hierarchy/master/data/emnehierarki_test.xml',
+    );
+    $path = drupal_get_path('module', 'bibdk_subject_hierarchy') . "/data";
+    foreach ($urls as $url) {
+      $new = system_retrieve_file($url, $path, FALSE, FILE_EXISTS_REPLACE);
+      if ($new) {
+        watchdog('subject_hierarchy', 'Xml files was reloaded.', array(), WATCHDOG_NOTICE);
+      }
+    }
+    variable_set('bibdk_subject_hierarchy_next_execution', time() + $interval);
+  }
+}
+
+/**
  * Implements hook_theme().
  */
 function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
