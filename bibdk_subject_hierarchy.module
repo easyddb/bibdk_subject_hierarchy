@@ -99,7 +99,7 @@ function bibdk_subject_hierarchy_block_view($delta = '') {
  */
 function bibdk_subject_hierarchy_cron() {
   $interval = variable_get('bibdk_subject_hierarchy_interval', 60 * 60);
-  if (time() >= variable_get('bibdk_subject_hierarchy_next_execution', 0)) {
+  if (REQUEST_TIME >= variable_get('bibdk_subject_hierarchy_next_execution', 0)) {
     $urls = array(
       'https://raw.githubusercontent.com/DBCDK/bibdk_subject_hierarchy/master/data/emnehierarki_full.xml',
       'https://raw.githubusercontent.com/DBCDK/bibdk_subject_hierarchy/master/data/emnehierarki_test.xml',
@@ -111,7 +111,7 @@ function bibdk_subject_hierarchy_cron() {
         watchdog('subject_hierarchy', 'Xml files was reloaded.', array(), WATCHDOG_NOTICE);
       }
     }
-    variable_set('bibdk_subject_hierarchy_next_execution', time() + $interval);
+    variable_set('bibdk_subject_hierarchy_next_execution', REQUEST_TIME + $interval);
   }
 }
 
