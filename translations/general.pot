@@ -3,18 +3,18 @@
 # LANGUAGE translation of Drupal (general)
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
-#  bibdk_subject_hierarchy.admin.inc: n/a
-#  bibdk_subject_hierarchy.search.inc: n/a
-#  bibdk_subject_hierarchy.suggestion.inc: n/a
-#  bibdk_subject_hierarchy.module: n/a
-#  bibdk_subject_hierarchy.info: n/a
-#  test/bibdk_subject_hierarchy_mockup/bibdk_subject_hierarchy_mockup.info: n/a
+#  profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.admin.inc: n/a
+#  profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.search.inc: n/a
+#  profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.suggestion.inc: n/a
+#  profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.module: n/a
+#  profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.info: n/a
+#  profiles/ding2/modules/bibdk_subject_hierarchy/test/bibdk_subject_hierarchy_mockup/bibdk_subject_hierarchy_mockup.info: n/a
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-02-19 16:14+0100\n"
+"POT-Creation-Date: 2015-07-28 11:31+0300\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -23,161 +23,161 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: bibdk_subject_hierarchy.admin.inc:15
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.admin.inc:15
 msgctxt "bibdk_subject_hierarchy"
 msgid "Subject hierarchy suggestions"
 msgstr ""
 
-#: bibdk_subject_hierarchy.admin.inc:16
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.admin.inc:16
 msgctxt "bibdk_subject_hierarchy"
 msgid "Edit settings for the subject hierarchy."
 msgstr ""
 
-#: bibdk_subject_hierarchy.admin.inc:23
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.admin.inc:23
 msgctxt "bibdk_subject_hierarchy"
 msgid "Email address to recieve suggestions"
 msgstr ""
 
-#: bibdk_subject_hierarchy.admin.inc:29
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.admin.inc:29
 msgctxt "bibdk_subject_hierarchy"
 msgid "Return email address on suggestions"
 msgstr ""
 
-#: bibdk_subject_hierarchy.admin.inc:44
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.admin.inc:44
 msgid "Invalid \"to\" email address."
 msgstr ""
 
-#: bibdk_subject_hierarchy.admin.inc:47
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.admin.inc:47
 msgid "Invalid \"from\" email address."
 msgstr ""
 
-#: bibdk_subject_hierarchy.search.inc:147
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.search.inc:147
 msgid "search in subject hierarchy"
 msgstr ""
 
-#: bibdk_subject_hierarchy.search.inc:153
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.search.inc:153
 msgid "search"
 msgstr ""
 
-#: bibdk_subject_hierarchy.search.inc:179
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.search.inc:179
 msgid "You got !number_of_results results in !number_of_groups groups"
 msgstr ""
 
-#: bibdk_subject_hierarchy.search.inc:206
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.search.inc:206
 msgid "Subject hierarchy searchresult on @term"
 msgstr ""
 
-#: bibdk_subject_hierarchy.search.inc:255
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.search.inc:255
 msgid "A search on %term gives %results results"
 msgstr ""
 
-#: bibdk_subject_hierarchy.search.inc:259
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.search.inc:259
 msgid "Show result"
 msgstr ""
 
-#: bibdk_subject_hierarchy.suggestion.inc:57
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.suggestion.inc:57
 msgctxt "bibdk_subject_hierarchy"
 msgid "HEADER_HIERARCHY_SEND_SUGGESTION"
 msgstr ""
 
-#: bibdk_subject_hierarchy.suggestion.inc:63
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.suggestion.inc:63
 msgctxt "bibdk_subject_hierarchy"
 msgid "TEXT_HIERARCHY_SEND_SUGGESTION"
 msgstr ""
 
-#: bibdk_subject_hierarchy.suggestion.inc:80;158
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.suggestion.inc:80;158
 msgctxt "bibdk_subject_hierarchy"
 msgid "PLACEHOLDER_HIERARCHY_SEND_SUGGESTION"
 msgstr ""
 
-#: bibdk_subject_hierarchy.suggestion.inc:87
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.suggestion.inc:87
 msgctxt "bibdk_subject_hierarchy"
 msgid "BUTTON_HIERARCHY_SEND_SUGGESTION"
 msgstr ""
 
-#: bibdk_subject_hierarchy.suggestion.inc:137
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.suggestion.inc:137
 msgctxt "bibdk_subject_hierarchy"
 msgid "HEADER_HIERARCHY_CONFIRMED_SUGGESTION"
 msgstr ""
 
-#: bibdk_subject_hierarchy.suggestion.inc:143
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.suggestion.inc:143
 msgctxt "bibdk_subject_hierarchy"
 msgid "TEXT_HIERARCHY_CONFIRMED_SUGGESTION"
 msgstr ""
 
-#: bibdk_subject_hierarchy.suggestion.inc:164
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.suggestion.inc:164
 msgid "suggestion cant be empty"
 msgstr ""
 
-#: bibdk_subject_hierarchy.suggestion.inc:241
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.suggestion.inc:241
 msgctxt "bibdk_subject_hierarchy"
 msgid "EMAIL_SUBJECT_HIERARCHY_SUGGESTION"
 msgstr ""
 
-#: bibdk_subject_hierarchy.suggestion.inc:242
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.suggestion.inc:242
 msgctxt "bibdk_subject_hierarchy"
 msgid "EMAIL_BODY_HIERARCHY_SUGGESTION\n\n!suggestion"
 msgstr ""
 
-#: bibdk_subject_hierarchy.module:68;87
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.module:68;87
 msgid "Bibliotek.dk subject hierarchy"
 msgstr ""
 
-#: bibdk_subject_hierarchy.module:151
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.module:151
 msgctxt "bibdk_subject_hierarchy"
 msgid "HEADER_BIBDK_SUBJECT_HIERARCHY"
 msgstr ""
 
-#: bibdk_subject_hierarchy.module:153
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.module:153
 msgctxt "bibdk_subject_hierarchy"
 msgid "SUBJECT_HIERARCHY_HELPTEXT"
 msgstr ""
 
-#: bibdk_subject_hierarchy.module:374
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.module:374
 msgid "subject_hierarchy"
 msgstr ""
 
-#: bibdk_subject_hierarchy.module:374
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.module:374
 msgid "No XML file found."
 msgstr ""
 
-#: bibdk_subject_hierarchy.module:20
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.module:20
 msgid "bibdk_subject_hierarchy callback"
 msgstr ""
 
-#: bibdk_subject_hierarchy.module:29
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.module:29
 msgid "bibdk_subject_hierarchy non-javascript callback"
 msgstr ""
 
-#: bibdk_subject_hierarchy.module:37
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.module:37
 msgid "Subject hierarchy"
 msgstr ""
 
-#: bibdk_subject_hierarchy.module:38
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.module:38
 msgid "Set admin email for user suggestions"
 msgstr ""
 
-#: bibdk_subject_hierarchy.info:0
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.info:0
 msgid "Subject hierarchy - Bibliotek.dk"
 msgstr ""
 
-#: bibdk_subject_hierarchy.info:0
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.info:0
 msgid "Provide a subject hierarchy list."
 msgstr ""
 
-#: bibdk_subject_hierarchy.info:0
+#: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.info:0
 msgid "easyDDB"
 msgstr ""
 
-#: test/bibdk_subject_hierarchy_mockup/bibdk_subject_hierarchy_mockup.info:0
+#: profiles/ding2/modules/bibdk_subject_hierarchy/test/bibdk_subject_hierarchy_mockup/bibdk_subject_hierarchy_mockup.info:0
 msgid "bibdk_subject_hierarchy mockup"
 msgstr ""
 
-#: test/bibdk_subject_hierarchy_mockup/bibdk_subject_hierarchy_mockup.info:0
+#: profiles/ding2/modules/bibdk_subject_hierarchy/test/bibdk_subject_hierarchy_mockup/bibdk_subject_hierarchy_mockup.info:0
 msgid "Support module for subject_heriarchy test."
 msgstr ""
 
-#: test/bibdk_subject_hierarchy_mockup/bibdk_subject_hierarchy_mockup.info:0
+#: profiles/ding2/modules/bibdk_subject_hierarchy/test/bibdk_subject_hierarchy_mockup/bibdk_subject_hierarchy_mockup.info:0
 msgid "bibliotek.dk"
 msgstr ""
 
