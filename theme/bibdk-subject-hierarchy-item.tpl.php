@@ -21,6 +21,8 @@
           $url = 'bibdk_subject_hierarchy/nojs/' . $variables['current_key'] . ',' . $key;
           $attributes['attributes']['class'] = array('use-ajax', 'nesting');
         }
+
+        $attributes['query'] = array('source' => 'external');
         echo '<li>' . l($item['ord'], $url, $attributes) . "</li>\n";
       } ?>
     </ul>
