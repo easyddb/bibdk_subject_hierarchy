@@ -161,6 +161,7 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
  * @return string
  */
 function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
+  drupal_add_css(drupal_get_path('module', 'bibdk_subject_hierarchy') . '/css/bibdk_subject_hierarchy.css', array('type' => 'file'));
 
   $hierarchy = _get_bibdk_subject_hierarchy();
 
