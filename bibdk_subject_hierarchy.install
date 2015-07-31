@@ -67,11 +67,3 @@ function _add_bibdk_subject_hierarchy_block() {
 function bibdk_subject_hierarchy_update_7001(&$sandbox) {
   _add_bibdk_subject_hierarchy_block();
 }
-
-/**
- * update hierarchy
- */
-function bibdk_subject_hierarchy_update_7009(&$sandbox) {
-  _update_bibdk_subject_hierarchy();
-}
-
