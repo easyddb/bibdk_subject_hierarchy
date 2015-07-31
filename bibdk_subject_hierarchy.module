@@ -5,6 +5,7 @@
  */
 
 define('BIBDK_XML_PATH', 'public://bibdk_subject_hierarchy');
+define('BIBDK_ONE_WEEK', 604800);
 
 // includes search functionality
 include_once('bibdk_subject_hierarchy.search.inc');
@@ -117,7 +118,7 @@ function bibdk_subject_hierarchy_cron() {
         watchdog('subject_hierarchy', 'Xml files was reloaded.', array(), WATCHDOG_INFO);
       }
     }
-    $interval = variable_get('bibdk_subject_hierarchy_interval', 604800);
+    $interval = variable_get('bibdk_subject_hierarchy_interval', BIBDK_ONE_WEEK);
     variable_set('bibdk_subject_hierarchy_next_execution', REQUEST_TIME + $interval);
   }
   else {
