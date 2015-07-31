@@ -34,7 +34,7 @@ function bibdk_subject_hierarchy_admin() {
     '#type'           => 'textfield',
     '#title'          => t('Interval for cron.'),
     '#description'    => t('Set interval in miliseconds.'),
-    '#default_value'  => variable_get('bibdk_subject_hierarchy_interval', 3600),
+    '#default_value'  => variable_get('bibdk_subject_hierarchy_interval', BIBDK_ONE_WEEK),
   );
 
   return system_settings_form($form);
