@@ -117,7 +117,7 @@ function bibdk_subject_hierarchy_cron() {
         watchdog('subject_hierarchy', 'Xml files was reloaded.', array(), WATCHDOG_INFO);
       }
     }
-    $interval = variable_get('bibdk_subject_hierarchy_interval', 60 * 60);
+    $interval = variable_get('bibdk_subject_hierarchy_interval', 604800);
     variable_set('bibdk_subject_hierarchy_next_execution', REQUEST_TIME + $interval);
   }
   else {
