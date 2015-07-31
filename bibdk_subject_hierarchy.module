@@ -4,6 +4,8 @@
  * Bibliotek.dk subject hierarchy module main file.
  */
 
+define('BIBDK_XML_PATH', 'public://bibdk');
+
 // includes search functionality
 include_once('bibdk_subject_hierarchy.search.inc');
 
@@ -98,21 +100,30 @@ function bibdk_subject_hierarchy_block_view($delta = '') {
  * Implements hook_cron().
  */
 function bibdk_subject_hierarchy_cron() {
-  $interval = variable_get('bibdk_subject_hierarchy_interval', 60 * 60);
-  if (REQUEST_TIME >= variable_get('bibdk_subject_hierarchy_next_execution', 0)) {
-    $urls = array(
-      'https://raw.githubusercontent.com/DBCDK/bibdk_subject_hierarchy/master/data/emnehierarki_full.xml',
-      'https://raw.githubusercontent.com/DBCDK/bibdk_subject_hierarchy/master/data/emnehierarki_test.xml',
-    );
-    $path = drupal_get_path('module', 'bibdk_subject_hierarchy') . "/data";
+  if (REQUEST_TIME <= variable_get('bibdk_subject_hierarchy_next_execution', 0)) {
+    return;
+  }
+
+  $urls = array(
+    'https://raw.githubusercontent.com/DBCDK/bibdk_subject_hierarchy/master/data/emnehierarki_full.xml',
+    'https://raw.githubusercontent.com/DBCDK/bibdk_subject_hierarchy/master/data/emnehierarki_test.xml',
+  );
+
+  $dir = BIBDK_XML_PATH;
+  if (file_prepare_directory($dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
     foreach ($urls as $url) {
-      $new = system_retrieve_file($url, $path, FALSE, FILE_EXISTS_REPLACE);
+      $new = system_retrieve_file($url, BIBDK_XML_PATH, FALSE, FILE_EXISTS_REPLACE);
       if ($new) {
-        watchdog('subject_hierarchy', 'Xml files was reloaded.', array(), WATCHDOG_NOTICE);
+        watchdog('subject_hierarchy', 'Xml files was reloaded.', array(), WATCHDOG_INFO);
       }
     }
+    $interval = variable_get('bibdk_subject_hierarchy_interval', 60 * 60);
     variable_set('bibdk_subject_hierarchy_next_execution', REQUEST_TIME + $interval);
   }
+  else {
+    watchdog('subject_hierarchy', 'Failed create bibdk storage at: @path', array('@path' => BIBDK_XML_PATH), WATCHDOG_ERROR);
+  }
+
 }
 
 /**
@@ -380,20 +391,20 @@ function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key, $path = '
   }
 
   return $breadcrumbs;
-
 }
 
 /**
  * Parse hierarchy xml into an array
  */
 function _bibdk_subject_hierarchy_read_data() {
-  $filename = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/data/emnehierarki_full.xml';
-  $file = file_get_contents($filename);
-  if ($file) {
+  $filename = drupal_realpath(BIBDK_XML_PATH) . '/emnehierarki_full.xml';
+
+  if (file_exists($filename)) {
+    $file = file_get_contents($filename);
     return _bibdk_subject_hierarchy_parse_xml($file);
   }
   else {
-    watchdog('subject_hierarchy', 'No XML file found.', array(), WATCHDOG_ERROR);
+    watchdog('subject_hierarchy', 'No XML file found.', array(), WATCHDOG_NOTICE);
   }
 
   return FALSE;
