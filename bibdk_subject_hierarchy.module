@@ -4,6 +4,9 @@
  * Bibliotek.dk subject hierarchy module main file.
  */
 
+define('BIBDK_XML_PATH', 'public://bibdk_subject_hierarchy');
+define('BIBDK_ONE_WEEK', 604800);
+
 // includes search functionality
 include_once('bibdk_subject_hierarchy.search.inc');
 
@@ -95,6 +98,36 @@ function bibdk_subject_hierarchy_block_view($delta = '') {
 }
 
 /**
+ * Implements hook_cron().
+ */
+function bibdk_subject_hierarchy_cron() {
+  if (REQUEST_TIME <= variable_get('bibdk_subject_hierarchy_next_execution', 0)) {
+    return;
+  }
+
+  $urls = array(
+    'https://raw.githubusercontent.com/DBCDK/bibdk_subject_hierarchy/master/data/emnehierarki_full.xml',
+    'https://raw.githubusercontent.com/DBCDK/bibdk_subject_hierarchy/master/data/emnehierarki_test.xml',
+  );
+
+  $dir = BIBDK_XML_PATH;
+  if (file_prepare_directory($dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
+    foreach ($urls as $url) {
+      $new = system_retrieve_file($url, BIBDK_XML_PATH, FALSE, FILE_EXISTS_REPLACE);
+      if ($new) {
+        watchdog('subject_hierarchy', 'Xml files was reloaded.', array(), WATCHDOG_INFO);
+      }
+    }
+    $interval = variable_get('bibdk_subject_hierarchy_interval', BIBDK_ONE_WEEK);
+    variable_set('bibdk_subject_hierarchy_next_execution', REQUEST_TIME + $interval);
+  }
+  else {
+    watchdog('subject_hierarchy', 'Failed create bibdk storage at: @path', array('@path' => BIBDK_XML_PATH), WATCHDOG_ERROR);
+  }
+
+}
+
+/**
  * Implements hook_theme().
  */
 function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
@@ -140,6 +173,7 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
  * @return string
  */
 function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
+  drupal_add_css(drupal_get_path('module', 'bibdk_subject_hierarchy') . '/css/bibdk_subject_hierarchy.css', array('type' => 'file'));
 
   $hierarchy = _get_bibdk_subject_hierarchy();
 
@@ -358,20 +392,20 @@ function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key, $path = '
   }
 
   return $breadcrumbs;
-
 }
 
 /**
  * Parse hierarchy xml into an array
  */
 function _bibdk_subject_hierarchy_read_data() {
-  $filename = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/data/emnehierarki_full.xml';
-  $file = file_get_contents($filename);
-  if ($file) {
+  $filename = drupal_realpath(BIBDK_XML_PATH) . '/emnehierarki_full.xml';
+
+  if (file_exists($filename)) {
+    $file = file_get_contents($filename);
     return _bibdk_subject_hierarchy_parse_xml($file);
   }
   else {
-    watchdog('subject_hierarchy', 'No XML file found.', array(), WATCHDOG_ERROR);
+    watchdog('subject_hierarchy', 'No XML file found.', array(), WATCHDOG_NOTICE);
   }
 
   return FALSE;
@@ -382,9 +416,9 @@ function _bibdk_subject_hierarchy_read_data() {
  */
 function _bibdk_subject_hierarchy_parse_xml($file) {
   require_once('lib/xml_func.php');
+
   if ($file = utf8_encode($file)) {
     $emnehierarki = xml2array($file);
-
     return _bibdk_subject_hierarchy_parse($emnehierarki['term']);
   }
 
@@ -395,6 +429,7 @@ function _bibdk_subject_hierarchy_parse_xml($file) {
  * Parse hierarchy xml into an array
  */
 function _bibdk_subject_hierarchy_parse($terms) {
+
   while (list($n, $term) = each($terms)) {
     $record[$n] = _bibdk_subject_hierarchy_parse_term($term);
   }
@@ -485,15 +520,11 @@ function _bibdk_subject_hierarchy_parse_term($term) {
         $cql = str_ireplace($replaceFromShortterm, $replaceToShortterm, $item);
         $cql = str_ireplace($replaceFromLongterm, $replaceToLongterm, $cql);
         $cql = str_ireplace($replaceFromBoolean, $replaceToBoolean, $cql);
-
-        $parts = preg_split('/(\s(?>or|and|not|\)|\(|\=)\s)/i', $cql, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-
-        foreach ($parts as $key => $part) {
-          $parts[$key] = preg_replace('/((?>[\w\d\.\*ÆØÅæøå-]+\s*){2,})/','"$0"', $part);
-        }
-
-        $cql = implode('', $parts);
         $record['cql'] = $cql;
+        if ( class_exists('CQLStrictParser') ) {
+          $cql_strict_parser = new CQLStrictParser;
+          $record['cql'] = $cql_strict_parser->parse($cql);
+        }
         $record[$key] = $item;
       }
       elseif ($key == 'ord') {
