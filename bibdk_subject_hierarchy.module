@@ -262,6 +262,9 @@ function _bibdk_subject_hierarchy_get_arranged_items($hierarchy, $row_to_show) {
  * AJAX callback
  */
 function bibdk_subject_hierarchy_ajax_callback($key) {
+  // Based on 7.39 core version, mark the current URL as trusted.
+  ajax_set_verification_header();
+
   $emnehierarki = _get_bibdk_subject_hierarchy();
 
   $emnehierarki_item = _get_bibdk_subject_hierarchy_item($emnehierarki, $key);
@@ -372,19 +375,22 @@ function _get_bibdk_subject_hierarchy_level($emnehierarki, $key) {
 }
 
 function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key, $path = 'work', $breadcrumbs = array()) {
-
   $level = array_shift($key);
 
+  $keys_path = implode(',', $key);
+  if (empty($link_path)) {
+    $keys_path = $level;
+  }
   $breadcrumbs[] = array(
     '#theme' => 'link',
     '#text' => $emnehierarki[$level]['ord'],
-    '#path' => (!empty($emnehierarki[$level]['cql'])) ? 'search/' . $path . '/' . $emnehierarki[$level]['cql'] : 'bibdk_subject_hierarchy/nojs/' . implode(',', $key),
+    '#path' => (!empty($emnehierarki[$level]['cql'])) ? 'search/' . $path . '/' . $emnehierarki[$level]['cql'] : 'bibdk_subject_hierarchy/nojs/' . $keys_path,
     '#options' => array(
       'attributes' => (!empty($emnehierarki[$level]['cql'])) ? array('class' => array('last')) : array('class' => array('use-ajax')),
       'html' => FALSE,
     ),
     '#key' => $level,
-    '#keys_path' => implode(',', $key),
+    '#keys_path' => $keys_path,
   );
 
   if (sizeof($key) > 0 && isset($emnehierarki[$level]['term']) && isset($emnehierarki[$level]['term'])) {
