@@ -50,45 +50,50 @@ function xml2array($data, $save_dup=FALSE, $skip_white_space=FALSE) {
 
 
 function GetChildren($vals, &$i, $save_dup) {
-//echo "\nGetChildren: $i";
   $children = array();
-  if ( !isset($j) ) $j=0;
-  if ( isset($vals[$i]['value']) ) array_push($children, $vals[$i]['value']);
+  if (!isset($j)) {
+    $j = 0;
+  }
+  if (isset($vals[$i]['value'])) {
+    array_push($children, $vals[$i]['value']);
+  }
 
   $prevtag = "";
-  while (++$i < count($vals)) {   // so pra nao botar while true ;-)
-    //echo "\n$i " . $vals[$i]['tag'] . ":" . $vals[$i]['type'] . " -> . " . $vals[$i]['value'];
+  while (++$i < count($vals)) {
     switch ($vals[$i]['type']) {
-       case 'cdata':
-         array_push($children, trim($vals[$i]['value']));
-         break;
-       case 'complete':
-         $tag = strtolower($vals[$i]['tag']);
-           if ($save_dup)
-             // $children[$tag][] = $vals[$i]['value'];
-             $children[$tag][] = ( isset($vals[$i]['value']) )  ? trim($vals[$i]['value']) : '';
-           else
-             // $children[$tag] = $vals[$i]['value'];
-             $children[$tag] = ( isset($vals[$i]['value']) )  ? trim($vals[$i]['value']) : '';
-         //}
-         break;
+      case 'cdata':
+        array_push($children, trim($vals[$i]['value']));
+        break;
 
-       case 'open':
-         //restartindex on unique tag-name
-         $j++;
-         if ($prevtag <> $vals[$i]['tag']) {
-                 $j = 0;
-                 $prevtag = $vals[$i]['tag'];
-         }
-         $children[ strtolower($vals[$i]['tag']) ][$j] = GetChildren($vals,$i, $save_dup);
-         break;
+      case 'complete':
+        $tag = strtolower($vals[$i]['tag']);
+        if ($save_dup) {
+          $children[$tag][] = (isset($vals[$i]['value'])) ? trim($vals[$i]['value']) : '';
+        }
+        else {
+          $children[$tag] = (isset($vals[$i]['value'])) ? trim($vals[$i]['value']) : '';
+        }
+        break;
 
-       case 'close':
-         return $children;
+      case 'open':
+        // Restart index on unique tag-name.
+        $j++;
+        if ($prevtag <> $vals[$i]['tag']) {
+          $j = 0;
+          $prevtag = $vals[$i]['tag'];
+        }
+        $children[strtolower($vals[$i]['tag'])][$j] = GetChildren($vals, $i, $save_dup);
+        break;
+
+      case 'close':
+        return $children;
+
+      default:
+        watchdog('subject_hierarchy', 'No processed types was found.');
+        break;
     }
   }
 }
-
 
 function array2xml($array, $level=1) {
   // Gijs van Tulder. gvtulder.f2o.org :: gvtulder@gmx.net
