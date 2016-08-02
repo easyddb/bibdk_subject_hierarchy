@@ -50,7 +50,6 @@ function xml2array($data, $save_dup=FALSE, $skip_white_space=FALSE) {
 
 
 function GetChildren($vals, &$i, $save_dup) {
-//echo "\nGetChildren: $i";
   $children = array();
   if (!isset($j)) {
     $j = 0;
@@ -60,8 +59,7 @@ function GetChildren($vals, &$i, $save_dup) {
   }
 
   $prevtag = "";
-  while (++$i < count($vals)) {   // so pra nao botar while true ;-)
-    //echo "\n$i " . $vals[$i]['tag'] . ":" . $vals[$i]['type'] . " -> . " . $vals[$i]['value'];
+  while (++$i < count($vals)) {
     switch ($vals[$i]['type']) {
       case 'cdata':
         array_push($children, trim($vals[$i]['value']));
@@ -69,19 +67,16 @@ function GetChildren($vals, &$i, $save_dup) {
 
       case 'complete':
         $tag = strtolower($vals[$i]['tag']);
-        if ($save_dup) // $children[$tag][] = $vals[$i]['value'];
-        {
+        if ($save_dup) {
           $children[$tag][] = (isset($vals[$i]['value'])) ? trim($vals[$i]['value']) : '';
         }
-        else // $children[$tag] = $vals[$i]['value'];
-        {
+        else {
           $children[$tag] = (isset($vals[$i]['value'])) ? trim($vals[$i]['value']) : '';
         }
-        //}
         break;
 
       case 'open':
-        //restartindex on unique tag-name
+        // Restart index on unique tag-name.
         $j++;
         if ($prevtag <> $vals[$i]['tag']) {
           $j = 0;
@@ -92,10 +87,9 @@ function GetChildren($vals, &$i, $save_dup) {
 
       case 'close':
         return $children;
-        break;
 
       default:
-        watchdog('subject_hierarchy', t('No processed types was found.'));
+        watchdog('subject_hierarchy', 'No processed types was found.');
         break;
     }
   }
