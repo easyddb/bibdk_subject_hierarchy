@@ -116,6 +116,7 @@ function bibdk_subject_hierarchy_cron() {
       $new = system_retrieve_file($url, BIBDK_XML_PATH, FALSE, FILE_EXISTS_REPLACE);
       if ($new) {
         watchdog('subject_hierarchy', 'Xml files was reloaded.', array(), WATCHDOG_INFO);
+        _update_bibdk_subject_hierarchy();
       }
     }
     $interval = variable_get('bibdk_subject_hierarchy_interval', BIBDK_ONE_WEEK);
