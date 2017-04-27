@@ -2,7 +2,7 @@ name = Subject hierarchy - Bibliotek.dk
 description = Provide a subject hierarchy list.
 core = 7.x
 version = 7.x-2.2.0+easy
-package = easyDDB
+package = easyOPAC
 dependencies[] = ting_search
 
 files[] = lib/xml_func.php
