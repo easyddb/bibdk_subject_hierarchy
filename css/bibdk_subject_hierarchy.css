@@ -1517,6 +1517,7 @@ ul.icons li [class*=" icon-"] {
   height: auto !important;
   height: 42px;
   text-transform: capitalize;
+  width: auto;
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .form-item-search-hierarchy-input {
   box-sizing: border-box;
