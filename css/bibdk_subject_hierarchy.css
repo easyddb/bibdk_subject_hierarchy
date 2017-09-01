@@ -1350,7 +1350,8 @@ ul.icons li [class*=" icon-"] {
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .header h1,
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .header h2 {
-  font-size: font-size-large;
+  font-size: 130%;
+  margin-bottom: 0;
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .message {
   display: none;
@@ -1371,9 +1372,9 @@ ul.icons li [class*=" icon-"] {
   font-size: 20px;
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .themes__item p {
-  min-height: 85px;
+  min-height: 60px;
   height: auto !important;
-  height: 85px;
+  height: 60px;
   position: relative;
   margin: 0;
 }
@@ -1382,6 +1383,10 @@ ul.icons li [class*=" icon-"] {
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy #bibdk-subject-hierarchy-searchfield-form {
   float: right;
+}
+.pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy #bibdk-subject-hierarchy-searchfield-form > div {
+  display: flex;
+  align-items: start;
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .bibdk-subject-hierarchy-header,
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .bibdk-subject-hierarchy-helptext {
@@ -1397,9 +1402,9 @@ ul.icons li [class*=" icon-"] {
 }
 @media only screen and (min-width: 1211px) {
   .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy #bibdk-subject-hierarchy .themes__item--active > p {
-    min-height: 85px;
+    min-height: 60px;
     height: auto !important;
-    height: 85px;
+    height: 60px;
   }
   .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy #bibdk-subject-hierarchy .themes__item--active > p:after {
     position: absolute;
@@ -1477,7 +1482,10 @@ ul.icons li [class*=" icon-"] {
   clear: both;
   margin-bottom: 20px;
 }
-.pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .themes__sublist li {
+.pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .themes__sublist ul {
+  margin-bottom: 20px;
+}
+.pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .themes__sublist ul li {
   overflow: hidden;
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .themes__sublist .ajax-progress,
@@ -1513,9 +1521,9 @@ ul.icons li [class*=" icon-"] {
   text-transform: capitalize;
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .searchfield-submit {
-  min-height: 42px;
+  min-height: 54px;
   height: auto !important;
-  height: 42px;
+  height: 54px;
   text-transform: capitalize;
   width: auto;
 }
@@ -1526,6 +1534,9 @@ ul.icons li [class*=" icon-"] {
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .form-item-search-hierarchy-input input {
   width: 100%;
+}
+.pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .search-hierarchy-suggestion-input {
+  box-shadow: inset 0 0 8px 0px #888;
 }
 @media only screen and (min-width: 481px) and (max-width: 768px) {
   .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .themes_row {
