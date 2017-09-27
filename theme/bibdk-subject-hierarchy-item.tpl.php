@@ -6,7 +6,7 @@
 ?>
 
 <div class="themes__sublists">
-  <div class="themes__close-button icon icon-blue-x">&nbsp;</div>
+  <div class="themes__close-button icon icon-x-altx-alt">&nbsp;</div>
   <div class="themes__breadcrumb">
     <?php echo drupal_render($breadcrumbs); ?>
   </div>
@@ -19,7 +19,7 @@
         }
         else {
           $url = 'bibdk_subject_hierarchy/nojs/' . $variables['current_key'] . ',' . $key;
-          $attributes['attributes']['class'] = array('use-ajax', 'nesting');
+          $attributes['attributes']['class'] = array('use-ajax', 'nesting','icon-plus-alt');
         }
 
         $attributes['query'] = array('source' => 'external');
