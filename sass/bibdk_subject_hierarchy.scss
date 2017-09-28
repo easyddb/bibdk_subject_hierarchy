@@ -1,22 +1,35 @@
 @import "_mixins";
-@import "_fontawesome";
+@import "../../../themes/ddbasic/sass/_base.scss";
 @import "susy";
+
 
 /* FontAwesome
    ========================================================================== */
-
-$fontAwesomePath:   "../font" !default;
-
 @font-face {
-  font-family: 'FontAwesome';
-  src: url('#{$fontAwesomePath}/fontawesome-webfont.eot?v=3.0.1');
-  src: url('#{$fontAwesomePath}/fontawesome-webfont.eot?#iefix&v=3.0.1') format("embedded-opentype"),
-    url('#{$fontAwesomePath}/fontawesome-webfont.woff?v=3.0.1') format("woff"),
-    url('#{$fontAwesomePath}/fontawesome-webfont.ttf?v=3.0.1') format("truetype");
+  font-family: 'icomoon';
+  src:  url('../fonts/icomoon.eot?tldck4');
+  src:  url('../fonts/icomoon.eot?tldck4#iefix') format('embedded-opentype'),
+    url('../fonts/icomoon.ttf?tldck4') format('truetype'),
+    url('../fonts/icomoon.woff?tldck4') format('woff'),
+    url('../fonts/icomoon.svg?tldck4#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
 
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 /* Spacing variables
    ========================================================================== */
@@ -205,10 +218,10 @@ $font-size-small:                 85%;
     cursor: pointer;
   }
 
-  .icon-blue-x:before {
-    color: $dark-gray;
-    content: '\f05c';
-    font-size: 18px;
+  .icon-x-altx-alt:before {
+    content: '\e991';
+    font-size: 14px;
+    font-weight: 900;
   }
 
   // Breadcrumbs
@@ -234,12 +247,11 @@ $font-size-small:                 85%;
 
       // Separator icon
 
-      &:before {
+      &.icon-keyboard_arrow_right:before {
         margin-right: 10px;
         color: $dark-gray;
-        content: '\f105';
-        font-weight: $base-font-weight-bold;
-        font-family: 'FontAwesome';
+        content: '\e992';
+        font-size: 14px;
       }
 
       &:first-of-type:before {
@@ -280,12 +292,11 @@ $font-size-small:                 85%;
 
       // Expand icon
 
-      &.nesting:after {
+       &.icon-plus-alt:after {
         margin-left: 10px;
         color: $dark-gray;
-        content: '\f055';
-        font-weight: $base-font-weight-bold;
-        font-family: 'FontAwesome';
+        content: '\e990';
+        font-size: 14px;
       }
 
       // Spinner icon position
