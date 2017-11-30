@@ -16,7 +16,8 @@
   font-style: normal;
 }
 
-[class^="icon-"], [class*=" icon-"] {
+[class^="icon-"]:before, [class*=" icon-"]:before,
+[class^="icon-"]:after, [class*=" icon-"]:after {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
   speak: none;
@@ -64,13 +65,14 @@ $font-size-small:                 85%;
    ========================================================================== */
 
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy {
-  margin: 20px 0;
-  padding: 10px 20px;
-  background-color: $white;
 
   &,
   a {
     font-size: $font-size-reset;
+  }
+
+  .bibdk-subject-hierarchy-content {
+    overflow: hidden;
   }
 
   // Try to hide empty lists
@@ -212,7 +214,6 @@ $font-size-small:                 85%;
 
   .themes__close-button {
     position: absolute;
-    top: 18px;
     right: 10px;
     display: inline-block;
     cursor: pointer;
