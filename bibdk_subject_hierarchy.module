@@ -171,14 +171,17 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
 
 /**
  * @param array $row_to_show
- * @return string
+ * @return array
+ *   Renderable array of hierarchy rows.
  */
 function bibdk_subject_hierarchy_get_block_content($row_to_show = array()) {
   drupal_add_css(drupal_get_path('module', 'bibdk_subject_hierarchy') . '/css/bibdk_subject_hierarchy.css', array('type' => 'file'));
 
   $hierarchy = _get_bibdk_subject_hierarchy();
-
-  $rows = _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show);
+  $rows = array();
+  if (!empty($hierarchy)) {
+    $rows = _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show);
+  }
 
   $rendered = array(
     '#theme' => 'bibdk_subject_hierarchy',
@@ -387,7 +390,7 @@ function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key, $path = '
     '#text' => $emnehierarki[$level]['ord'],
     '#path' => (!empty($emnehierarki[$level]['cql'])) ? 'search/' . $path . '/' . $emnehierarki[$level]['cql'] : 'bibdk_subject_hierarchy/nojs/' . $keys_path,
     '#options' => array(
-      'attributes' => (!empty($emnehierarki[$level]['cql'])) ? array('class' => array('last')) : array('class' => array('use-ajax')),
+      'attributes' => (!empty($emnehierarki[$level]['cql'])) ? array('class' => array('last', 'icon-keyboard_arrow_right')) : array('class' => array('use-ajax', 'icon-keyboard_arrow_right')),
       'html' => FALSE,
     ),
     '#key' => $level,

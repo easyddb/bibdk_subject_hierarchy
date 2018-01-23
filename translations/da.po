@@ -176,7 +176,7 @@ msgid "Provide a subject hierarchy list."
 msgstr "Emneoversigtsliste (kan ses på bibliotek.dk)."
 
 #: profiles/ding2/modules/bibdk_subject_hierarchy/bibdk_subject_hierarchy.info:0
-msgid "easyDDB"
+msgid "easyOPAC"
 msgstr ""
 
 #: profiles/ding2/modules/bibdk_subject_hierarchy/test/bibdk_subject_hierarchy_mockup/bibdk_subject_hierarchy_mockup.info:0
