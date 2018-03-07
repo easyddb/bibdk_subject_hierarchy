@@ -322,7 +322,6 @@ $font-size-small:                 85%;
 
     input {
       margin: 0;
-      text-transform: capitalize;
     }
   }
 
@@ -332,15 +331,17 @@ $font-size-small:                 85%;
     @include min-height(54px);
     text-transform: capitalize;
     width: auto;
+    border-radius: 0 5px 5px 0;
   }
 
   .form-item-search-hierarchy-input {
     box-sizing: border-box;
     float: left;
-    margin-right: 10px;
+    margin-right: 0;
 
     input {
       width: 100%;
+      border-radius: 5px 0 0 5px;
     }
   }
 
@@ -378,6 +379,7 @@ $font-size-small:                 85%;
     // Grid setup
 
     .themes__item {
+      overflow: hidden;
 
       // Media large-x-large
 
