@@ -307,7 +307,6 @@
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .searchfield-submit input,
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .form-item-search-hierarchy-input input {
   margin: 0;
-  text-transform: capitalize;
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .searchfield-submit {
   min-height: 54px;
@@ -315,14 +314,16 @@
   height: 54px;
   text-transform: capitalize;
   width: auto;
+  border-radius: 0 5px 5px 0;
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .form-item-search-hierarchy-input {
   box-sizing: border-box;
   float: left;
-  margin-right: 10px;
+  margin-right: 0;
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .form-item-search-hierarchy-input input {
   width: 100%;
+  border-radius: 5px 0 0 5px;
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .search-hierarchy-suggestion-input {
   box-shadow: inset 0 0 8px 0px #888;
@@ -347,6 +348,9 @@
 }
 .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .themes_row .note a {
   font-size: 85%;
+}
+.pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .themes_row .themes__item {
+  overflow: hidden;
 }
 @media only screen and (min-width: 769px) {
   .pane-bibdk-subject-hierarchy-bibdk-subject-hierarchy .themes_row .themes__item {
