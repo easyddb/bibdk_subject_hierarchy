@@ -83,6 +83,6 @@ function bibdk_subject_hierarchy_update_7001(&$sandbox) {
 /**
  * Update translations.
  */
-function ding_reading_club_update_7002() {
+function bibdk_subject_hierarchy_update_7002() {
   bibdk_subject_hierarchy_translation_update();
 }
