@@ -190,3 +190,207 @@ msgstr ""
 #: profiles/ding2/modules/bibdk_subject_hierarchy/test/bibdk_subject_hierarchy_mockup/bibdk_subject_hierarchy_mockup.info:0
 msgid "bibliotek.dk"
 msgstr ""
+
+#: /bibdk_subject_hierarchy/nojs/10
+msgid "bibdk_subject_hierarchy non-javascript callback"
+msgstr ""
+
+#: /bibdk_subject_hierarchy/ajax/6
+msgid "bibdk_subject_hierarchy callback"
+msgstr ""
+
+#: /admin/config/search/bibdk_subject_hierarchy?render=overlay
+msgid "Interval for cron."
+msgstr ""
+
+#: /admin/config/search/bibdk_subject_hierarchy?render=overlay
+msgid "Set interval in miliseconds."
+msgstr ""
+
+#: bibdk_subject_hierarchy.info:0
+msgid "Provide a subject hierarchy list."
+msgstr "Emneoversigtsliste (kan ses på bibliotek.dk)."
+
+#: bibdk_subject_hierarchy.module:68;87
+msgid "Bibliotek.dk subject hierarchy"
+msgstr "Emneoversigt"
+
+#: bibdk_subject_hierarchy.search.inc:147
+msgid "search in subject hierarchy"
+msgstr "Søg i emnelisten.."
+
+#: bibdk_subject_hierarchy.search.inc:179
+msgid "You got !number_of_results results in !number_of_groups groups"
+msgstr "Du fik !number_of_results hits i !number_of_groups kategorier"
+
+#: bibdk_subject_hierarchy.search.inc:206
+msgid "Subject hierarchy searchresult on @term"
+msgstr "Du har søgt på: @term"
+
+#: bibdk_subject_hierarchy.search.inc:255
+msgid "A search on %term gives %results results"
+msgstr "En søgning på %term giver %results hits"
+
+#: bibdk_subject_hierarchy.search.inc:259
+msgid "Show result"
+msgstr "Vis alle hits"
+
+#: bibdk_subject_hierarchy.suggestion.inc:164
+msgid "suggestion cant be empty"
+msgstr "Du har ikke skrevet et forslag."
+
+#: bibdk_subject_hierarchy.module:374
+msgid "No XML file found."
+msgstr "Der blev ikke fundet nogen XML fil."
+
+#: bibdk_subject_hierarchy.module:37
+msgid "Subject hierarchy"
+msgstr "Emneoversigt"
+
+#: bibdk_subject_hierarchy.module:38
+msgid "Set admin email for user suggestions"
+msgstr "Email indstillinger til forslag."
+
+#: bibdk_subject_hierarchy.info:0
+msgid "Subject hierarchy - Bibliotek.dk"
+msgstr "Emneoversigt"
+
+#: bibdk_subject_hierarchy.admin.inc:15
+msgctxt "bibdk_subject_hierarchy"
+msgid "Subject hierarchy suggestions"
+msgstr "Emneoversigt forslag"
+
+#: bibdk_subject_hierarchy.admin.inc:16
+msgctxt "bibdk_subject_hierarchy"
+msgid "Edit settings for the subject hierarchy."
+msgstr "Email indstillinger for forslag til Emneoversigten."
+
+#: bibdk_subject_hierarchy.admin.inc:23
+msgctxt "bibdk_subject_hierarchy"
+msgid "Email address to recieve suggestions"
+msgstr "Email adresse der skal modtaget forslag:"
+
+#: bibdk_subject_hierarchy.admin.inc:29
+msgctxt "bibdk_subject_hierarchy"
+msgid "Return email address on suggestions"
+msgstr "Email adresse from forslag skal sendes fra:"
+
+#: bibdk_subject_hierarchy.suggestion.inc:57
+msgctxt "bibdk_subject_hierarchy"
+msgid "HEADER_HIERARCHY_SEND_SUGGESTION"
+msgstr "Forslag til emne"
+
+#: bibdk_subject_hierarchy.suggestion.inc:63
+msgctxt "bibdk_subject_hierarchy"
+msgid "TEXT_HIERARCHY_SEND_SUGGESTION"
+msgstr ""
+"Fandt du ikke det emne du søgte? Har du forslag til emner der skal "
+"med på emneoversigten - skriv i boksen."
+
+#: bibdk_subject_hierarchy.suggestion.inc:80;158
+msgctxt "bibdk_subject_hierarchy"
+msgid "PLACEHOLDER_HIERARCHY_SEND_SUGGESTION"
+msgstr "Skriv dit forslag her"
+
+#: bibdk_subject_hierarchy.suggestion.inc:87
+msgctxt "bibdk_subject_hierarchy"
+msgid "BUTTON_HIERARCHY_SEND_SUGGESTION"
+msgstr "Send forslag"
+
+#: bibdk_subject_hierarchy.suggestion.inc:137
+msgctxt "bibdk_subject_hierarchy"
+msgid "HEADER_HIERARCHY_CONFIRMED_SUGGESTION"
+msgstr "Tak!"
+
+#: bibdk_subject_hierarchy.suggestion.inc:143
+msgctxt "bibdk_subject_hierarchy"
+msgid "TEXT_HIERARCHY_CONFIRMED_SUGGESTION"
+msgstr ""
+"Vi ser på forslaget næste gang vi opdaterer Emneoversigt med nye "
+"emner."
+
+#: bibdk_subject_hierarchy.suggestion.inc:241
+msgctxt "bibdk_subject_hierarchy"
+msgid "EMAIL_SUBJECT_HIERARCHY_SUGGESTION"
+msgstr "Forslag til Emneoversigt"
+
+#: bibdk_subject_hierarchy.suggestion.inc:242
+msgctxt "bibdk_subject_hierarchy"
+msgid ""
+"EMAIL_BODY_HIERARCHY_SUGGESTION\n"
+"\n"
+"!suggestion"
+msgstr ""
+"Der er en bruger som har foreslået følgende til Emneoversigten:\n"
+"\n"
+"!suggestion"
+
+#: bibdk_subject_hierarchy.module:151
+msgctxt "bibdk_subject_hierarchy"
+msgid "HEADER_BIBDK_SUBJECT_HIERARCHY"
+msgstr "Emneoversigt"
+
+#: bibdk_subject_hierarchy.module:153
+msgctxt "bibdk_subject_hierarchy"
+msgid "SUBJECT_HIERARCHY_HELPTEXT"
+msgstr "Klik dig frem!"
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_MENNESKE_SAMFUND"
+msgstr "Familien Velfærd Ældre Børn ..."
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_SUNDHED_SYGDOM"
+msgstr "Medicin Motion Livsstil Arbejdsmiljø ..."
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_HJEM_FRITID"
+msgstr "Hus&have Sport Hobby Mad&drikke ..."
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_PAEDAGOGIK_PSYKOLOGI_UDDANNELSE"
+msgstr "Skole Studier Daginstitutioner Unge ..."
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_SAMFUNDET_OKONOMI_POLITIK"
+msgstr "Lov&ret EU Kommuner Politi Militær ..."
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_HISTORIE_REJSER_SPROG"
+msgstr "Geografi Ordbøger Opdagelsesrejser ... "
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_IT_MEDIER_KOMMUNIKATION"
+msgstr "Internet Computer Telefon Formidling ... "
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_FAG_ERHVERV_BRANCHER"
+msgstr "Industri Business Virksomheder ... "
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_FORSKNING_NATUR_TEKNIK"
+msgstr "Klima Universet Trafik Energi Dyr ... "
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_FILOSOFI_RELIGION"
+msgstr "Etik Myter Livsanskuelse ... "
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_KUNST_KULTUR"
+msgstr "Litteratur Film Musik TV Design ... "
+
+#: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
+msgctxt "bibdk_subject_hierarchy"
+msgid "LABEL_SKONLITTERATUR_BIOGRAFIER"
+msgstr "Romaner Krimi Humor Erindringer ... "
