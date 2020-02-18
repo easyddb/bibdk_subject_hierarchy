@@ -60,10 +60,29 @@ function _add_bibdk_subject_hierarchy_block() {
   $query->execute();
 }
 
+
+/**
+ * Import translations from the module.
+ */
+function bibdk_subject_hierarchy_translation_update() {
+  $file = new stdClass();
+  $path = drupal_get_path('module', 'bibdk_subject_hierarchy');
+  $file->uri = $path . '/translations/bibdk_subject_hierarchy.da.po';
+  $file->filename = basename($file->uri);
+  _locale_import_po($file, 'da', LOCALE_IMPORT_KEEP, 'default');
+}
+
 /**
  * Implements hook_update_N
  * set region and blocks
  */
 function bibdk_subject_hierarchy_update_7001(&$sandbox) {
   _add_bibdk_subject_hierarchy_block();
+}
+
+/**
+ * Update translations.
+ */
+function bibdk_subject_hierarchy_update_7002() {
+  bibdk_subject_hierarchy_translation_update();
 }
