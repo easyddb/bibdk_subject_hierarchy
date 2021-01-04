@@ -337,60 +337,60 @@ msgstr "Klik dig frem!"
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_MENNESKE_SAMFUND"
+msgid "LABEL_MENNESKE_OG_SAMFUND"
 msgstr "Familien Velfærd Ældre Børn ..."
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_SUNDHED_SYGDOM"
+msgid "LABEL_SUNDHED_OG_SYGDOM"
 msgstr "Medicin Motion Livsstil Arbejdsmiljø ..."
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_HJEM_FRITID"
+msgid "LABEL_HJEM_OG_FRITID"
 msgstr "Hus&have Sport Hobby Mad&drikke ..."
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_PAEDAGOGIK_PSYKOLOGI_UDDANNELSE"
+msgid "LABEL_PAEDAGOGIK_PSYKOLOGI_UNDERVISNING_OG_UDDANNELSE"
 msgstr "Skole Studier Daginstitutioner Unge ..."
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_SAMFUNDET_OKONOMI_POLITIK"
+msgid "LABEL_SAMFUNDET_OKONOMI_OG_POLITIK"
 msgstr "Lov&ret EU Kommuner Politi Militær ..."
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_HISTORIE_REJSER_SPROG"
-msgstr "Geografi Ordbøger Opdagelsesrejser ... "
+msgid "LABEL_LANDE_HISTORIE_REJSER_OG_SPROG"
+msgstr "Geografi Ordbøger Opdagelsesrejser ..."
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_IT_MEDIER_KOMMUNIKATION"
-msgstr "Internet Computer Telefon Formidling ... "
+msgid "LABEL_IT_MEDIER_OG_KOMMUNIKATION"
+msgstr "Internet Computer Telefon Formidling ..."
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_FAG_ERHVERV_BRANCHER"
-msgstr "Industri Business Virksomheder ... "
+msgid "LABEL_ERHVERVSLIV_OG_BRANCHER"
+msgstr "Industri Business Virksomheder ..."
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_FORSKNING_NATUR_TEKNIK"
-msgstr "Klima Universet Trafik Energi Dyr ... "
+msgid "LABEL_FORSKNING_NATUR_OG_TEKNIK"
+msgstr "Klima Universet Trafik Energi Dyr ..."
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_FILOSOFI_RELIGION"
-msgstr "Etik Myter Livsanskuelse ... "
+msgid "LABEL_FILOSOFI_OG_RELIGION"
+msgstr "Etik Myter Livsanskuelse ..."
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_KUNST_KULTUR"
-msgstr "Litteratur Film Musik TV Design ... "
+msgid "LABEL_LITTERATURHISTORIE_ARKITEKTUR_KUNST_FILM_TV_TEATER_OG_MUSIK"
+msgstr "Litteratur Film Musik TV Design ..."
 
 #: /panels/ajax/ipe/add-pane/panel_context%3Apage-ding_frontpage%3A%3Apage_ding_frontpage_panel_context%3A%3A%3A%3A/s4_r_01_100/block/bibdk_subject_hierarchy-bibdk-subject-hierarchy/form
 msgctxt "bibdk_subject_hierarchy"
-msgid "LABEL_SKONLITTERATUR_BIOGRAFIER"
-msgstr "Romaner Krimi Humor Erindringer ... "
+msgid "LABEL_SKONLITTERATUR_OG_BIOGRAFIER"
+msgstr "Romaner Krimi Humor Erindringer ..."
