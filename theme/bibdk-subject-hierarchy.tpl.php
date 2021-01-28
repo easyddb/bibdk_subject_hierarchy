@@ -3,10 +3,14 @@
 /**
  * @file
  * Theme implementation for bibdk_subject_hierarchy.
+ *
+ * @var $header
+ * @var $helptext
+ * @var $rows
  */
 ?>
 
-<div id="bibdk-subject-hierarchy" class="themes clearfix">
+<div id="bibdk-subject-hierarchy" class="subjects clearfix">
   <div class="container clearfix">
     <div class="clearfix">
       <div class="bibdk-subject-hierarchy-header">
@@ -19,12 +23,12 @@
         <?php print drupal_render($searchfield); ?>
       </div>
     </div>
-    <div id="bibdk-subject-hierarchy-content">
-    <?php foreach ($rows as $row) : ?>
-      <?php print $row; ?>
-    <?php endforeach; ?>
+    <div id="bibdk-subject-hierarchy-content"
+         class="bibdk-subject-hierarchy-inner clearfix">
+      <?php foreach ($rows as $row) : ?>
+        <?php print $row; ?>
+      <?php endforeach; ?>
     </div>
-    <div id="bibdk-subject-hierarchy-searchresult">
-    </div>
-    </div>
+    <div id="bibdk-subject-hierarchy-searchresult"></div>
+  </div>
 </div>

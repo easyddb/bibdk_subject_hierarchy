@@ -217,11 +217,11 @@ function xmlpush($tag, $val, $cdata = FALSE) {
  */
 function get_array_value(&$arr, $tag, $empty_value="") {
   $ret = "";
-  if (isset($arr[$tag]["value"])) 
+  if (isset($arr[$tag]["value"]))
     $ret = $arr[$tag]["value"];
   elseif (is_array($arr[$tag]))
     foreach ($arr[$tag] as $val)
-      if (isset($val["value"])) 
+      if (isset($val["value"]))
         $ret .= " " . $val["value"];
 
   if ($ret == "") $ret = $empty_value;
@@ -253,7 +253,7 @@ function xmlstruct_extract(&$struct, $tagname, $results=array(), $target="attrib
   }
 
   foreach($struct['vals'] as $k=>$v) {
-	
+
 		if(is_array($v)) {
 			if(isset($v["tag"]) && $v["tag"]==$tagname) {
 		    $results[]=$v[$target];
