@@ -505,7 +505,7 @@ function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $keys, $path = 
       '#text' => $current_level['ord'],
       '#path' => 'bibdk_subject_hierarchy/nojs/' . $parent_string,
       '#options' => [
-        'attributes' => (!empty($emnehierarki[$current_level]['cql'])) ? ['class' => ['container-last']] : [
+        'attributes' => (empty($current_level['cql'])) ? ['class' => ['container-last']] : [
           'class' => [
             'use-ajax',
             'icon-keyboard_arrow_right',
