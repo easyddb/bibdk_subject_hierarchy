@@ -7,10 +7,10 @@
 define('BIBDK_XML_PATH', 'public://bibdk_subject_hierarchy');
 define('BIBDK_ONE_WEEK', 604800);
 
-// includes search functionality
+// Includes search functionality.
 include_once('bibdk_subject_hierarchy.search.inc');
 
-// includes suggestion functionality
+// Includes suggestion functionality.
 include_once('bibdk_subject_hierarchy.suggestion.inc');
 
 /**
@@ -63,11 +63,9 @@ function bibdk_subject_hierarchy_menu() {
  */
 function bibdk_subject_hierarchy_help($path, $arg) {
   $output = '';
-  switch ($path) {
-    case 'admin/help#bibdk_subject_hierarchy';
-      $file = drupal_get_path('module', 'bibdk_subject_hierarchy') . "/help/bibdk_subject_hierarchy.help";
-      $output = file_get_contents($file);
-      break;
+  if ($path == 'admin/help#bibdk_subject_hierarchy') {
+    $file = drupal_get_path('module', 'bibdk_subject_hierarchy') . "/help/bibdk_subject_hierarchy.help";
+    $output = file_get_contents($file);
   }
 
   return $output;
@@ -91,18 +89,16 @@ function bibdk_subject_hierarchy_block_info() {
  */
 function bibdk_subject_hierarchy_block_view($delta = '') {
   $block = [];
-  switch ($delta) {
-    case 'bibdk-subject-hierarchy':
-      // Load in Drupal core AJAX library.
-      drupal_add_library('system', 'drupal.ajax');
-      drupal_add_js(drupal_get_path('module', 'bibdk_subject_hierarchy') . '/js/bibdk_subject_hierarchy.js');
-      drupal_add_js(drupal_get_path('module', 'ting_search') . '/js/ting_search_overlay.js');
-      $block['title'] = '<none>';
-      $block['subject'] = t('Bibliotek.dk subject hierarchy', []);
-      $block['content'] = bibdk_subject_hierarchy_get_block_content();
-      $block['visibilty'] = BLOCK_VISIBILITY_LISTED;
-      $block['pages'] = '<front>';
-      break;
+  if ($delta == 'bibdk-subject-hierarchy') {
+    // Load in Drupal core AJAX library.
+    drupal_add_library('system', 'drupal.ajax');
+    drupal_add_js(drupal_get_path('module', 'bibdk_subject_hierarchy') . '/js/bibdk_subject_hierarchy.js');
+    drupal_add_js(drupal_get_path('module', 'ting_search') . '/js/ting_search_overlay.js');
+    $block['title'] = '<none>';
+    $block['subject'] = t('Bibliotek.dk subject hierarchy', []);
+    $block['content'] = bibdk_subject_hierarchy_get_block_content();
+    $block['visibility'] = BLOCK_VISIBILITY_LISTED;
+    $block['pages'] = '<front>';
   }
 
   return $block;
@@ -143,8 +139,6 @@ function bibdk_subject_hierarchy_cron() {
  * Implements hook_theme().
  */
 function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
-  $path = drupal_get_path('module', 'bibdk_subject_hierarchy') . '/theme';
-
   return [
     'bibdk_subject_hierarchy' => [
       'variables' => [
@@ -155,8 +149,7 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
         'searchfield_link' => '',
         'helptext' => '',
       ],
-      'path' => $path,
-      'template' => 'bibdk-subject-hierarchy',
+      'template' => 'theme/bibdk-subject-hierarchy',
     ],
     'bibdk_subject_hierarchy_item' => [
       'variables' => [
@@ -167,8 +160,7 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
         'search_path' => NULL,
         'close_button' => NULL,
       ],
-      'path' => $path,
-      'template' => 'bibdk-subject-hierarchy-item',
+      'template' => 'theme/bibdk-subject-hierarchy-item',
     ],
     'bibdk_subject_hierarchy_row' => [
       'variables' => [
@@ -177,19 +169,21 @@ function bibdk_subject_hierarchy_theme($existing, $type, $theme, $path) {
         'visible_row' => '',
         'display' => 'none',
       ],
-      'path' => $path,
-      'template' => 'bibdk-subject-hierarchy-row',
+      'template' => 'theme/bibdk-subject-hierarchy-row',
     ],
   ];
 }
 
 /**
+ * Build block content.
+ *
  * @param array $row_to_show
+ *   Selected row info.
  *
  * @return array
  *   Renderable array of hierarchy rows.
  */
-function bibdk_subject_hierarchy_get_block_content($row_to_show = []) {
+function bibdk_subject_hierarchy_get_block_content($row_to_show = []): array {
   drupal_add_css(drupal_get_path('module', 'bibdk_subject_hierarchy') . '/css/bibdk_subject_hierarchy.css', ['type' => 'file']);
   drupal_add_js(drupal_get_path('module', 'bibdk_subject_hierarchy') . '/js/bibdk_subject_hierarchy.js');
   drupal_add_js(drupal_get_path('module', 'ting_search') . '/js/ting_search_overlay.js');
@@ -225,22 +219,16 @@ function bibdk_subject_hierarchy_get_block_content($row_to_show = []) {
 }
 
 /**
- * callback method for bibdk_custom_header_block
+ * Build the rows.
  *
- * @return array|mixed
- * @see bibdk_custom_header_block/plugins/content_types/custom_header_block.inc
- */
-function bibdk_subject_hierarchy_get_searchfield() {
-  return drupal_get_form('bibdk_subject_hierarchy_searchfield_form');
-}
-
-/**
  * @param array $hierarchy
+ *   Data array.
  * @param array $row_to_show
+ *   Selected row info.
  *
  * @return array
  */
-function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
+function _bibdk_subject_hierarchy_get_rows(array $hierarchy, array $row_to_show): array {
   $rendered = [];
 
   $rows = _bibdk_subject_hierarchy_get_arranged_items($hierarchy, $row_to_show);
@@ -254,14 +242,24 @@ function _bibdk_subject_hierarchy_get_rows($hierarchy, $row_to_show) {
   return $rendered;
 }
 
-function _bibdk_subject_hierarchy_prepare_rows_for_rendering($rows, $row_to_show) {
+/**
+ * Prepare rows for rendering.
+ *
+ * @param array $rows
+ *   Hierarchy data.
+ * @param array $row_to_show
+ *   Selected row info.
+ *
+ * @return array
+ */
+function _bibdk_subject_hierarchy_prepare_rows_for_rendering(array $rows, array $row_to_show): array {
   $prepared = [];
 
   foreach ($rows as $key => $row) {
     $visible_row = '';
     $display = 'none';
 
-    if (!empty($row_to_show['row']) && $row_to_show['row'] == $key) {
+    if (!empty($row_to_show['row']) && $row_to_show['row'] === $key) {
       $visible_row = $row_to_show['rendered'];
       $display = 'block';
     }
@@ -281,12 +279,16 @@ function _bibdk_subject_hierarchy_prepare_rows_for_rendering($rows, $row_to_show
 }
 
 /**
- * @param $hierarchy
- * @param $row_to_show
+ * Arrange hierarchy data.
+ *
+ * @param array $hierarchy
+ *   Hierarchy data.
+ * @param array $row_to_show
+ *   Selected row info.
  *
  * @return array
  */
-function _bibdk_subject_hierarchy_get_arranged_items($hierarchy, $row_to_show) {
+function _bibdk_subject_hierarchy_get_arranged_items(array $hierarchy, array $row_to_show): array {
   $rows = [];
 
   foreach ($hierarchy as $index => $item) {
@@ -295,10 +297,11 @@ function _bibdk_subject_hierarchy_get_arranged_items($hierarchy, $row_to_show) {
     $item['label_id'] = 'subject-hierarchy-label-link-0-' . $index;
     $item['note_id'] = 'subject-hierarchy-note-link-0-' . $index;
     $item['url'] = url('bibdk_subject_hierarchy/nojs/' . $index);
-    $item['note'] = t($item['note'], [], ['context' => 'bibdk_subject_hierarchy']);
-
+    if (isset($item['note'])) {
+      $item['note'] = t($item['note'], [], ['context' => 'bibdk_subject_hierarchy']);
+    }
     $item['wrapper_classes'] = 'subject-item item-' . $index;
-    if (!empty($row_to_show['level']) && $row_to_show['level'] == $index) {
+    if (!empty($row_to_show['level']) && $row_to_show['level'] === $index) {
       $item['wrapper_classes'] .= ' subject-item--active';
     }
 
@@ -314,7 +317,7 @@ function _bibdk_subject_hierarchy_get_arranged_items($hierarchy, $row_to_show) {
  * @param string $key
  *   Hierarchy level ids.
  */
-function bibdk_subject_hierarchy_ajax_callback($key) {
+function bibdk_subject_hierarchy_ajax_callback(string $key) {
   // Based on 7.39 core version, mark the current URL as trusted.
   ajax_set_verification_header();
 
@@ -343,7 +346,7 @@ function bibdk_subject_hierarchy_ajax_callback($key) {
  *
  * @return array|mixed
  */
-function bibdk_subject_hierarchy_nojs_callback($key) {
+function bibdk_subject_hierarchy_nojs_callback(string $key): array {
   $emnehierarki = _get_bibdk_subject_hierarchy();
 
   $items = _get_bibdk_subject_hierarchy_item($emnehierarki, $key);
@@ -358,11 +361,13 @@ function bibdk_subject_hierarchy_nojs_callback($key) {
  * Generate hierarchy item.
  *
  * @param array $emnehierarki
+ *   Hierarchy data.
  * @param string $current_key
+ *   Selected item's index in hierarchy.
  *
  * @return array
  */
-function _get_bibdk_subject_hierarchy_item($emnehierarki, $current_key) {
+function _get_bibdk_subject_hierarchy_item(array $emnehierarki, string $current_key): array {
   $breadcrumbs = [];
   $heading = '';
   $key_arr = explode(',', $current_key);
@@ -371,7 +376,7 @@ function _get_bibdk_subject_hierarchy_item($emnehierarki, $current_key) {
 
   $path = _bibdk_subject_hierarchy_search_info();
 
-  if (sizeof($key_arr) > 0) {
+  if (count($key_arr) > 0) {
     $breadcrumbs = _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $key_arr, $path);
     $heading = _get_bibdk_subject_hierarchy_heading($emnehierarki, $key_arr, $path);
   }
@@ -382,7 +387,7 @@ function _get_bibdk_subject_hierarchy_item($emnehierarki, $current_key) {
 
   $emnehierarki = $emnehierarki[$level];
 
-  if (sizeof($key_arr) > 0) {
+  if (count($key_arr) > 0) {
     $emnehierarki = _get_bibdk_subject_hierarchy_level($emnehierarki, $key_arr);
   }
 
@@ -439,6 +444,8 @@ function _get_bibdk_subject_hierarchy_item($emnehierarki, $current_key) {
 }
 
 /**
+ * Read hierarchy data from variables.
+ *
  * @return array|bool|null
  */
 function _get_bibdk_subject_hierarchy() {
@@ -451,12 +458,20 @@ function _get_bibdk_subject_hierarchy() {
   return $emnehierarki;
 }
 
+/**
+ * Update hierarchy data.
+ */
 function _update_bibdk_subject_hierarchy() {
   $emnehierarki = _bibdk_subject_hierarchy_read_data();
   variable_set('subject_hierarchy', $emnehierarki);
 }
 
-function _bibdk_subject_hierarchy_search_info() {
+/**
+ * Get active search module.
+ *
+ * @return mixed|string
+ */
+function _bibdk_subject_hierarchy_search_info(): string {
   $path = '';
   $search_info = search_get_default_module_info();
   if (!empty($search_info['path']) && in_array($search_info['module'], variable_get('search_active_modules', []))) {
@@ -466,15 +481,25 @@ function _bibdk_subject_hierarchy_search_info() {
   return $path;
 }
 
-function _get_bibdk_subject_hierarchy_level($emnehierarki, $key) {
+/**
+ * Gets the nested level of hierarchy.
+ *
+ * @param array $emnehierarki
+ *   Hierarchy data.
+ * @param array $key
+ *   Selected level index.
+ *
+ * @return mixed|null
+ */
+function _get_bibdk_subject_hierarchy_level(array $emnehierarki, array $key) {
   $level = array_shift($key);
-  if (isset($emnehierarki['term']) && isset($emnehierarki['term'][$level])) {
+  if (isset($emnehierarki['term'], $emnehierarki['term'][$level])) {
     $emnehierarki = $emnehierarki['term'][$level];
   }
   else {
     return NULL;
   }
-  if (sizeof($key) > 0) {
+  if (count($key) > 0) {
     $emnehierarki = _get_bibdk_subject_hierarchy_level($emnehierarki, $key);
   }
 
@@ -485,14 +510,16 @@ function _get_bibdk_subject_hierarchy_level($emnehierarki, $key) {
  * Generate a clickable breadcrumb displayed in the top of the box when a
  * subject is clicked.
  *
- * @param $emnehierarki
- * @param $keys
+ * @param array $emnehierarki
+ *   Hierarchy data.
+ * @param array $keys
+ *   Hierarchy level keys.
  * @param string $path
+ *   Path for active search service.
  *
  * @return array
- * @internal param array $breadcrumbs
  */
-function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $keys, $path = 'ting') {
+function _get_bibdk_subject_hierarchy_breadcrumbs(array $emnehierarki, array $keys, $path = 'ting'): array {
   $breadcrumbs = [];
   $parent_string = '';
 
@@ -518,20 +545,22 @@ function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $keys, $path = 
     $breadcrumbs[] = $breadcrumb;
   }
 
-  // replace content of last breadcrumb
-  $breadcrumbs[sizeof($breadcrumbs) - 1] = [
+  $last_breadcrumb = array_key_last($breadcrumbs);
+
+  // Replace content of last breadcrumb.
+  $breadcrumbs[count($breadcrumbs) - 1] = [
     '#type' => 'container',
     '#attributes' => [
       'class' => ['container-last'],
     ],
     'final-breadcrumb' => [
       '#type' => 'markup',
-      '#markup' => $breadcrumb['#text'],
+      '#markup' => $breadcrumbs[$last_breadcrumb]['#text'],
     ],
   ];
 
-  if (sizeof($breadcrumbs) != 1) {
-    $breadcrumbs[sizeof($breadcrumbs) - 1]['#attributes']['class'][] = 'icon-keyboard_arrow_right';
+  if (count($breadcrumbs) !== 1) {
+    $breadcrumbs[count($breadcrumbs) - 1]['#attributes']['class'][] = 'icon-keyboard_arrow_right';
   }
 
   return $breadcrumbs;
@@ -540,14 +569,16 @@ function _get_bibdk_subject_hierarchy_breadcrumbs($emnehierarki, $keys, $path = 
 /**
  * Generate a heading, with a link if cql is not empty
  *
- * @param $emnehierarki
- * @param $keys
+ * @param array $emnehierarki
+ *   Hierarchy data.
+ * @param array $keys
+ *   Hierarchy level keys.
  * @param string $path
+ *   Search service path.
  *
  * @return array
- * @internal param array $heading
  */
-function _get_bibdk_subject_hierarchy_heading($emnehierarki, $keys, $path = 'ting') {
+function _get_bibdk_subject_hierarchy_heading(array $emnehierarki, array $keys, $path = 'ting'): array {
   $current_level = [];
   foreach ($keys as $key) {
     $current_level = empty($current_level) ? $emnehierarki[$key] : $current_level['term'][$key];
@@ -584,29 +615,38 @@ function _bibdk_subject_hierarchy_read_data() {
   if (!empty($data)) {
     return _bibdk_subject_hierarchy_parse($data);
   }
-  else {
-    watchdog('subject_hierarchy', 'No XML file found.', [], WATCHDOG_ERROR);
-  }
+
+  watchdog('subject_hierarchy', 'No XML file found.', [], WATCHDOG_ERROR);
 
   return FALSE;
 }
 
 /**
  * Parse hierarchy xml into an array.
+ *
+ * @param string $filename
+ *   Path to XML file to be read.
+ *
+ * @return array
  */
-function _bibdk_subject_hierarchy_parse_xml($filename) {
-  $xml = @simplexml_load_file($filename);
+function _bibdk_subject_hierarchy_parse_xml(string $filename): array {
+  $xml = @simplexml_load_string(file_get_contents($filename));
   // Simple trick to convert xml to php array
   $data = drupal_json_decode(drupal_json_encode($xml));
-  return (isset($data['term'])) ? $data['term'] : [];
+  return $data['term'] ?? [];
 }
 
 /**
- * Parse hierarchy xml into an array.
+ * Prepare hierarchy for saving into database.
+ *
+ * @param array $terms
+ *   Array of raw terms.
+ *
+ * @return array
  */
-function _bibdk_subject_hierarchy_parse($terms) {
+function _bibdk_subject_hierarchy_parse(array $terms): array {
   $record = [];
-  // if the key 'ord' exists there is only one term, and we need to wrap it in
+  // If the key 'ord' exists there is only one term, and we need to wrap it in
   // an array for the foreach loop to work correctly
   if (isset($terms['ord'])) {
     $terms = [$terms];
@@ -620,19 +660,24 @@ function _bibdk_subject_hierarchy_parse($terms) {
 }
 
 /**
- * Parse hierarchy term.
+ * Parse hierarchy terms.
+ *
+ * @param array $term
+ *   Hierarchy term data.
+ *
+ * @return array
  */
-function _bibdk_subject_hierarchy_parse_term($term) {
+function _bibdk_subject_hierarchy_parse_term(array $term): array {
   $record = [];
   foreach ($term as $key => $item) {
     if ((string) $key != (string) (int) $key) {
       if ($key == 'term') {
         $record['term'] = _bibdk_subject_hierarchy_parse($item);
       }
-      elseif ($key == 'cql' && !empty($item)) {
+      elseif ($key == 'cql') {
         $record['cql'] = $item;
       }
-      elseif ($key == 'ord' && !empty($item)) {
+      elseif ($key == 'ord') {
         $record['note'] = 'LABEL_' . normalize_string($item);
         $record[$key] = $item;
       }
@@ -645,18 +690,25 @@ function _bibdk_subject_hierarchy_parse_term($term) {
 }
 
 /**
- * Normalize a string so that it can be compared with others without being too fussy.
- *   e.g. "?dr???l?n?" would return "adrenaline"
- *   Note: Some letters are converted into more than one letter,
- *   e.g. "?" becomes "sz", or "?" becomes "ae"
+ * Normalize a string.
+ *
+ * Normalize a string so that it can be compared with others without being too
+ * fussy. e.g. "?dr???l?n?" would return "adrenaline" Note: Some letters are
+ * converted into more than one letter, e.g. "?" becomes "sz", or "?" becomes
+ * "ae"
+ *
+ * @param string $string
+ *   String to be normalized.
+ *
+ * @return string
  */
-function normalize_string($string) {
-  // remove whitespace, leaving only a single underscore between words.
+function normalize_string(string $string): string {
+  // Remove whitespace, leaving only a single underscore between words.
   $string = preg_replace('/\s+/', '_', $string);
-  // flick diacritics off of their letters
+  // Flick diacritics off of their letters.
   $string = preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml|caron);~i', '$1', htmlentities($string, ENT_COMPAT, 'UTF-8'));
   $string = strtoupper($string);
-  // replace all non-latin1 characters with NULL
+  // Replace all non-latin1 characters with NULL.
   $string = preg_replace('/[^0-9A-Z_]/', NULL, $string);
   $string = str_replace('__', '_', $string);
   $string = str_replace('_AMP_', '_', $string); // ditch "&"

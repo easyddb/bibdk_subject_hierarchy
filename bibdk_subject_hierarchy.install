@@ -34,8 +34,8 @@ function bibdk_subject_hierarchy_uninstall() {
  * @throws \Exception
  */
 function _add_bibdk_subject_hierarchy_block() {
-  $values = array(
-    array(
+  $values = [
+    [
       'module' => 'bibdk_subject_hierarchy',
       'delta' => 'bibdk-subject-hierarchy',
       'theme' => 'bibdk_theme',
@@ -45,9 +45,9 @@ function _add_bibdk_subject_hierarchy_block() {
       'pages' => '',
       'cache' => -1,
       'title' => '<none>',
-    ),
-  );
-  $query = db_insert('block')->fields(array(
+    ],
+  ];
+  $query = db_insert('block')->fields([
     'module',
     'delta',
     'theme',
@@ -56,8 +56,8 @@ function _add_bibdk_subject_hierarchy_block() {
     'region',
     'pages',
     'cache',
-    'title'
-  ));
+    'title',
+  ]);
   foreach ($values as $record) {
     $query->values($record);
   }

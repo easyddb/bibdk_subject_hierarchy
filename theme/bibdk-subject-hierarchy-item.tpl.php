@@ -18,11 +18,9 @@
   </div>
   <div class="subjects-sublist">
     <ul>
-      <?php
-        foreach ($hierarchy as $key => $item) {
-            echo render($item);
-        }
-      ?>
+    <?php foreach ($hierarchy as $key => $item) : ?>
+      <?php echo render($item); ?>
+    <?php endforeach; ?>
     </ul>
   </div>
 </div>

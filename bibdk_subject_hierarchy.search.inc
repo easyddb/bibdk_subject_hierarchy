@@ -14,7 +14,7 @@
  * @return array
  *   Grouped search result.
  */
-function _get_bibdk_subject_hierarchy_searchresult($term) {
+function _get_bibdk_subject_hierarchy_searchresult(string $term): array {
   $hierarchy = _get_bibdk_subject_hierarchy();
   $path = _bibdk_subject_hierarchy_search_info();
   $result = [
@@ -76,7 +76,7 @@ function _get_bibdk_subject_hierarchy_searchresult($term) {
  * @return array
  *   Results array.
  */
-function _get_bibdk_subject_hierarchy_searchresult_index($hierarchy, $searchterm, $hierarchy_level_index = [], &$results = []) {
+function _get_bibdk_subject_hierarchy_searchresult_index(array $hierarchy, string $searchterm, array $hierarchy_level_index = [], array &$results = []): array {
   foreach ($hierarchy as $key => $item) {
     // Set level_index of current  item.
     $current_level_index = $hierarchy_level_index;
@@ -109,7 +109,7 @@ function _get_bibdk_subject_hierarchy_searchresult_index($hierarchy, $searchterm
  * @return array
  *   Item renderable array.
  */
-function _get_bibdk_subject_hierarchy_searchresult_item($emnehierarki, $key, $path) {
+function _get_bibdk_subject_hierarchy_searchresult_item(array $emnehierarki, string $key, string $path): array {
   $key_arr = explode(',', $key);
   $level_index = array_shift($key_arr);
   $link = [];
@@ -134,7 +134,7 @@ function _get_bibdk_subject_hierarchy_searchresult_item($emnehierarki, $key, $pa
  * @return array
  *   Link renderable array.
  */
-function _get_bibdk_subject_hierarchy_searchresult_item_link($item, $key, $path) {
+function _get_bibdk_subject_hierarchy_searchresult_item_link(array $item, string $key, string $path): array {
   if (empty($item)) {
     return [];
   }
@@ -168,7 +168,6 @@ function _get_bibdk_subject_hierarchy_searchresult_item_link($item, $key, $path)
  *   Searchfield form array.
  */
 function bibdk_subject_hierarchy_searchfield_form($form, &$form_state) {
-  $form = [];
   $form['search-hierarchy-input'] = [
     '#type' => 'textfield',
     '#attributes' => [
@@ -283,7 +282,7 @@ function bibdk_subject_hierarchy_searchfield_form_submit($form, $form_state) {
  *
  * @throws \TingClientException
  */
-function bibdk_subject_hierarchy_searchfield_custom_search($term) {
+function bibdk_subject_hierarchy_searchfield_custom_search(string $term): array {
   module_load_include('client.inc', 'ting');
 
   $result = opensearch_do_search($term, 0, 0, []);

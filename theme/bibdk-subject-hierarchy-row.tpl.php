@@ -21,12 +21,14 @@
           </a>
         </span>
 
-        <span class="note">
-          <a href="<?php print $item['url']; ?>"
-             id="<?php print $item['note_id']; ?>" class="use-ajax">
-          <?php print $item['note']; ?>
-          </a>
-        </span>
+        <?php if(isset($item['note'])): ?>
+          <span class="note">
+            <a href="<?php print $item['url']; ?>"
+               id="<?php print $item['note_id']; ?>" class="use-ajax">
+            <?php print $item['note']; ?>
+            </a>
+          </span>
+        <?php endif; ?>
       </p>
     </div>
   <?php endforeach; ?>
